@@ -1,0 +1,5 @@
+*
+!.gitignore
+!INSTALL
+!Makefile
+!Makefile.variable
