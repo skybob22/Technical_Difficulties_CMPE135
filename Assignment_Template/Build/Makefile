@@ -1,6 +1,6 @@
 #==============================C++ Compilter Settings==============================#
 CXX := g++
-CFLAGS += -Wall -MMD
+CFLAGS += -Wall -MMD -MP
 CXXFLAGS += -std=c++11
 LDFLAGS += -static-libgcc -static-libstdc++ -pthread
 
