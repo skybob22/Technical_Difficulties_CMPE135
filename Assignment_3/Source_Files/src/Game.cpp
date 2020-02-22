@@ -11,14 +11,17 @@ Game::Game(GameMode mode):players(2, nullptr){
         case GameMode::PVP:{
             players[0] = Player::createPlayer(Player::PlayerType::Human,1);
             players[1] = Player::createPlayer(Player::PlayerType::Human,2);
+            break;
         }
         case GameMode::PVE:{
             players[0] = Player::createPlayer(Player::PlayerType::Human,1);
-            players[0] = Player::createPlayer(Player::PlayerType::Computer,2);
+            players[1] = Player::createPlayer(Player::PlayerType::Computer,2);
+            break;
         }
         case GameMode::EVE:{
             players[0] = Player::createPlayer(Player::PlayerType::Computer,1);
-            players[0] = Player::createPlayer(Player::PlayerType::Computer,2);
+            players[1] = Player::createPlayer(Player::PlayerType::Computer,2);
+            break;
         }
         default:{
             throw std::invalid_argument("Gamemode must be PVP, PVE or EVE");
@@ -44,11 +47,11 @@ void Game::playGame(){
     //Check if a round has been played or not yet
     if(result.playerChoices.size() < players.size()){
         //If a round hasn't been played reserve enough size for the results
-        result.playerChoices.reserve(players.size());
+        result.playerChoices.resize(players.size());
     }
 
-    for(unsigned int i=0;i<players.size();i++) {
-        result.playerChoices[i] = players[i]->getPlayerChoice();
+    for(Player* player: players) {
+        result.playerChoices[player->getPlayerNumber()-1] = player->getPlayerChoice();
     }
     result.winner = WinEval::checkResult(result.playerChoices);
 }

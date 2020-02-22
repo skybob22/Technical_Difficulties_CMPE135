@@ -32,13 +32,13 @@ void GameManager::startGame(Game::GameMode gameMode){
     game = new Game(gameMode);
 
     //Clear match history for new round of games, and allocate size for needed number of rounds
-    matchHistory = std::vector<Game::GameResult>(0);
+    matchHistory.clear();
     matchHistory.reserve(numRounds);
 
     //Loop through, playing however many rounds were requested
     for(unsigned int i=0;i<numRounds;i++){
         game->playGame();
-        matchHistory[i] = game->getResult();
+        matchHistory.push_back(game->getResult());
     }
     delete game;
     game = nullptr;

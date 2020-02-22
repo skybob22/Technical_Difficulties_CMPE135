@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <stdexcept>
 #include "Computer.h"
 
 /**
@@ -18,7 +20,20 @@ Computer::~Computer() = default;
  * @returnThe choice that the computer has selected
  */
 PlayerChoice Computer::getPlayerChoice(){
-    //TODO: Wite code to get choice from computer
-    //Temporary measure until implemented
-    return PlayerChoice::Rock;
+    //Used to mitigate bias in random number generation
+    int randomChoice = rand()%3;
+    switch(randomChoice){
+        case 0:{
+            return PlayerChoice::Rock;
+        }
+        case 1:{
+            return PlayerChoice::Paper;
+        }
+        case 2:{
+            return PlayerChoice::Scissors;
+        }
+        default:{
+            throw std::runtime_error("Random Number Generator produced unrecognized value");
+        }
+    }
 }
