@@ -6,4 +6,4 @@ override ROOT_DIR := ..
 override BUILD_DIR := $(ROOT_DIR)/Build
 
 #Import original makefile with overriden variables
-include $(BUILD_DIR)/makefile
+include $(BUILD_DIR)/Makefile
