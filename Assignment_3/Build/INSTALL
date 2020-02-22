@@ -1,0 +1,45 @@
+#==============================Building the Program==============================#
+When trying to build the programs make sure to navigate into the build directory such that it is the working directory
+
+Release:
+  To build the release version of the application run either 'make' or 'make release'
+  This version will not have any debugging information in the compiled binary
+
+Debug:
+  To build the debug version of the application run 'make debug'
+  This will enable debugging using either an IDE's built-in debugger or GDB
+
+Unit Tests:
+  To build the unit tests (using gtest) run 'make unit-tests'
+
+
+#==============================Running the Program==============================#
+Application:
+  To run the application run: './[Application_Name]'
+
+Unit Tests:
+  To run the unit tests run: './[Unit_Tests_Name]'
+  This will run the test-suite and show how many/which tests passed/failed
+
+  If you want to run only specific test(s) or omit certain test(s) you can add the following when running the program
+    > Format:           ./[Unit_Tests_Name] --gtest_filter="[Positive_Filters]":"-Negative_Filters"
+    > Select Specific:  ./[Unit_Tests_Name] --gtest_filter="[Test_Suite_Name].[Test_Name]"
+    > Select Suite:     ./[Unit_Tests_Name] --gtest_filter="[Test_Suite_Name].*"
+    > Omit Test(s):     ./[Unit_Tests_Name] --gtest_filter="-[Test_Suite_Name].*"
+    > Combined:         ./[Unit_Tests_Name] --gtest_filter="[Test_Suite_Name].*":"-[Test_Suite_Name].[Specific_Test]"
+
+
+
+#==============================Modifying Directories/Names==============================#
+The makefile is configured to dynamically search through several source directories and build anything in them
+If you only add files to existing directories, the makefile and variables file(s) do not need to be updated
+
+If you will be modifying the makefile/variables file here is a small bit of makefile terminology
+  VAR_NAME := [VAR_DATA] #Creates/Assigns new variable or modifies existing one
+  $(VAR_NAME) #Substitutes the contents of the variable in place of $(VAR_NAME) when executing
+
+If you add a new directory, then the variables file will need to be updated, but the makefile itself shouldn't unless major changes have been made
+  > Following the existing formatting, create a variable which is the path to your newly added folder
+  > If an existing super-directory already exists as a variable try to use that so that if they are renamed/moved your folder path will also be updated
+    Ex: If you create a folder 'Example' under Source_Files/src (which is already a variable APP_SRC_DIR) make your variable EXAMPLE_VAR := $(APP_SRC_DIR)/Example
+  > Then add your new folder variable to the appropriate 'ALL_***_DIR' at the bottom by appending '$(YOUR_FOLDER_PATH_VAR)' to the end of the appropriate one
