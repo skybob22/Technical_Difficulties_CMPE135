@@ -18,6 +18,7 @@ Human::~Human() = default;
  * @return The choice that the user has selected
  */
 PlayerChoice Human::getPlayerChoice(){
+    //TODO: Write code to get choice from user
     //Temporary measure until implemented
     return PlayerChoice::Rock;
 }

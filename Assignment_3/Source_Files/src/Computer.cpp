@@ -18,6 +18,7 @@ Computer::~Computer() = default;
  * @returnThe choice that the computer has selected
  */
 PlayerChoice Computer::getPlayerChoice(){
+    //TODO: Wite code to get choice from computer
     //Temporary measure until implemented
     return PlayerChoice::Rock;
 }
