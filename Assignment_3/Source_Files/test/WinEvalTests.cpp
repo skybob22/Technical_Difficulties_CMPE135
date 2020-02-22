@@ -14,7 +14,7 @@ TEST(WinEvalTests,ExhaustiveEvalTest){
     std::vector<std::vector<PlayerChoice>> Draw{
         {PlayerChoice::Rock,PlayerChoice::Rock},
         {PlayerChoice::Paper,PlayerChoice::Paper},
-        {PlayerChoice ::Scissors,PlayerChoice::Scissors}
+        {PlayerChoice::Scissors,PlayerChoice::Scissors}
     };
 
     //Check all possible combinations that result in a winner and loser

@@ -8,6 +8,11 @@ const std::unordered_map<PlayerChoice,std::unordered_set<PlayerChoice>> WinEval:
         {PlayerChoice::Scissors,{PlayerChoice::Paper}}
 };
 
+/**
+ * @brief Used to look at a set of player choices and determine which one won the match
+ * @param playerInputs A vector of player choices index[0] = player one choice, index[1] = player two choice
+ * @return Which player won the match, 0 = tie, 1 = player one wins, 2 = player two wins
+ */
 int WinEval::checkResult(std::vector<PlayerChoice> playerInputs){
     if(playerInputs.size() < 2){
         throw std::length_error("Input must have 2 player choices");
