@@ -22,15 +22,19 @@ PlayerChoice Human::getPlayerChoice(){
     //TODO: Write code to get choice from user
     char choice;
     std::cout << "Rock, Paper, or Scissors? Press r, p, or s respectively: " << std::endl;
-    std::cin >> choice;
 
     // Is this technically what we're supposed to do? I feel like there's more encapsulation we can do to avoid having to add more cases here?
-    switch(choice) {
-        case 'r':
-            return PlayerChoice::Rock;
-        case 'p':
-            return PlayerChoice::Paper;
-        case 's':
-            return PlayerChoice::Scissors;
+    while(1) {
+        std::cin >> choice;
+
+        switch (choice) {
+            case 'r':
+                return PlayerChoice::Rock;
+            case 'p':
+                return PlayerChoice::Paper;
+            case 's':
+                return PlayerChoice::Scissors;
+        }
+        std::cout << "Invalid choice, please try again: " << std::endl;
     }
 }
