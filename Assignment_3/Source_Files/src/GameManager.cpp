@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <iostream>
 #include "GameManager.h"
 
 /**
@@ -52,10 +54,34 @@ std::vector<Game::GameResult> GameManager::getMatchHistory() const{
     return matchHistory;
 }
 
-/**
- * @brief Prints the current results to an ostream
- */
-std::ostream& GameManager::operator<<(std::ostream& stream) const{
-    //TODO: Add code to display results
+ /**
+  * @brief Prints the current results to an ostream
+  * @param stream An ostream object
+  * @param gameManager A game manager (preferably that has already run some games)
+  * @return A reference to the ostream object
+  */
+std::ostream& operator<<(std::ostream& stream,const GameManager& gameManager){
+    if(gameManager.matchHistory.size() == 0){
+        stream << "No Games Played" << std::endl;
+        return stream;
+    }
+
+    int numPlayers = gameManager.matchHistory[0].playerChoices.size();
+    std::vector<unsigned int> numWins(numPlayers,0);
+    for(Game::GameResult result : gameManager.matchHistory){
+        for(int i=0;i<numPlayers;i++){
+            if(result.winner == i){
+                numWins[i]++;
+            }
+        }
+    }
+
+    stream << gameManager.matchHistory.size() << "games played" << std::endl;
+    for(int i=0;i<numPlayers;i++){
+        stream << "Player " << i+1 << ": " << numWins[i] << " Wins" << std::endl;
+    }
+
+    int winner = static_cast<int>(std::max_element(numWins.begin(),numWins.end()) - numWins.begin()) + 1;
+    stream << "Player " << winner << " Wins!" << std::endl;
     return stream;
 }

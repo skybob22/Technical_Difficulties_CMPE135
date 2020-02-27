@@ -14,7 +14,7 @@ public:
     void startGame(Game::GameMode gameMode);
     std::vector<Game::GameResult> getMatchHistory() const;
 
-    std::ostream& operator<<(std::ostream& stream) const;
+    friend std::ostream& operator<<(std::ostream& stream,const GameManager& gameManager);
 
 private:
     Game* game;

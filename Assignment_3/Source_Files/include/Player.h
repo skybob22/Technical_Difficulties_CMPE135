@@ -8,7 +8,7 @@ public:
     virtual ~Player();
 
     int getPlayerNumber() const;
-    virtual PlayerChoice getPlayerChoice() = 0;
+    virtual PlayerChoice::Choice getPlayerChoice() = 0;
 
     enum PlayerType{
         Human,

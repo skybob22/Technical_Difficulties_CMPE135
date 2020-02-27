@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include "Game.h"
-#include "WinEval.h"
 
 /**
  * @brief Creates a game object based on the type of gamemode you wish to play
@@ -53,7 +52,18 @@ void Game::playGame(){
     for(Player* player: players) {
         result.playerChoices[player->getPlayerNumber()-1] = player->getPlayerChoice();
     }
-    result.winner = WinEval::checkResult(result.playerChoices);
+
+    //Currently only configured for 2-player, if that changes this will need to be changed
+    int winner = PlayerChoice::evaluateMatchup(result.playerChoices[0],result.playerChoices[1]);
+    if(winner < 0){
+        result.winner = 1;
+    }
+    else if(winner > 0){
+        result.winner = 2;
+    }
+    else{
+        result.winner = 0;
+    }
 }
 
 /**
@@ -62,4 +72,29 @@ void Game::playGame(){
  */
 Game::GameResult Game::getResult() const{
     return result;
+}
+
+/**
+ * @brief Prints the result to an ostream
+ * @param result A GameResult object
+ * @return A reference to the stream object
+ */
+std::ostream& operator<<(std::ostream& stream,Game::GameResult result){
+    if(result.playerChoices.size() == 0){
+        stream << "No Results" << std::endl;
+        return stream;
+    }
+
+    for(unsigned int i=0;i<result.playerChoices.size();i++){
+        stream << "Player " << i+1 << ": " << PlayerChoice::toString(result.playerChoices[i]) << std::endl;
+    }
+
+    //Check if players tied
+    if(result.winner == 0){
+        stream << "Players Tied" << std::endl;
+    }
+    else {
+        stream << "Player " << result.winner << " Wins!" << std::endl;
+    }
+    return stream;
 }
