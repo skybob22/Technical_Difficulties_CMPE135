@@ -6,6 +6,9 @@
 TEST(GameManagerTests,NumRoundsTest){
     GameManager gameManager;
 
+    //Disable console output during test
+    std::cout.setstate(std::ios_base::failbit);
+
     //Check default number of rounds (20)
     ASSERT_NO_THROW(gameManager.startGame(Game::GameMode::EVE)); //Use EVE so that no human input is needed
     //Dont care what results actually are (since they're random), just that the size is correct
@@ -22,4 +25,7 @@ TEST(GameManagerTests,NumRoundsTest){
     ASSERT_NO_THROW(gameManager.startGame(Game::GameMode::EVE));
     //Dont care what results actually are (since they're random), just that the size is correct
     EXPECT_EQ(static_cast<unsigned int>(1000),gameManager.getMatchHistory().size());
+
+    //Re-enable console output
+    std::cout.clear();
 }

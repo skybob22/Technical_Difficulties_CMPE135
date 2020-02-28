@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include "PlayerChoice.h"
+#include "GameResult.h"
+#include "GameResult.h"
 
 class Player{
 public:
@@ -9,6 +11,7 @@ public:
 
     int getPlayerNumber() const;
     virtual PlayerChoice::Choice getPlayerChoice() = 0;
+    virtual void notifyPlayer(const GameResult result);
 
     enum PlayerType{
         Human,

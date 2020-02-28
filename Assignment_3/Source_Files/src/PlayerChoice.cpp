@@ -33,11 +33,12 @@ PlayerChoice::PlayerChoice() = default;
  */
 PlayerChoice::~PlayerChoice() = default;
 
-/**
- * @brief Used to look at a set of player choices and determine which one won the match
- * @param playerInputs A vector of player choices index[0] = player one choice, index[1] = player two choice
- * @return Which player won the match, 0 = tie, -1 = player one wins, -2 = player two wins
- */
+ /**
+  * @brief Used to look at a set of player choices and determine which one won the match
+  * @param p1 Player 1 choice
+  * @param p2 Player 2 choice
+  * @return Which player won the match, 0 = tie, -1 = player one wins, -2 = player two wins
+  */
 int PlayerChoice::evaluateMatchup(Choice p1, Choice p2){
     //Check if player 1 beat player 2
     auto p1Check = MATCHUP_MAP.find(p1);
@@ -52,7 +53,7 @@ int PlayerChoice::evaluateMatchup(Choice p1, Choice p2){
     auto p2Check = MATCHUP_MAP.find(p2);
     if(p2Check != MATCHUP_MAP.end()){
         if(p2Check->second.find(p1) != p2Check->second.end()){
-            //Player 1 beat player 2
+            //Player 2 beat player 1
             return 1;
         }
     }

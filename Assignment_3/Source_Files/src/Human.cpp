@@ -30,11 +30,11 @@ PlayerChoice::Choice Human::getPlayerChoice(){
             choiceList += "or ";
         }
     }
-    std::cout << "Select Option: Options are " << choiceList << std::endl;
+    std::cout << std::endl << "Select Option: Options are " << choiceList << std::endl;
 
     std::string userInput;
     while(true) {
-        std::cout << "Player " << getPlayerNumber() << ":" << std::endl;
+        std::cout << "Player " << getPlayerNumber() << ":";
         std::getline(std::cin,userInput);
 
         try{

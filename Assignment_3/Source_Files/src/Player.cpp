@@ -25,6 +25,15 @@ int Player::getPlayerNumber() const{
 }
 
 /**
+ * @brief Inform the player of the result of the match
+ * @param result The result of the match
+ */
+void Player::notifyPlayer(const GameResult result){
+    //Default behavior = Do nothing
+    //Subclasses must implement if functionality is desired
+}
+
+/**
  * @brief A factory for creating player objects
  * @param type The type of player that you want to create e.g Human or Computer
  * @param playerNumber The number of the player e.g 1 or 2

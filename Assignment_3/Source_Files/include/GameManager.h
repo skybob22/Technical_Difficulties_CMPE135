@@ -2,6 +2,7 @@
 #define GAME_MANAGER_H
 
 #include "Game.h"
+#include "GameResult.h"
 #include <vector>
 #include <ostream>
 
@@ -12,13 +13,13 @@ public:
 
     void setNumRounds(unsigned int numRounds);
     void startGame(Game::GameMode gameMode);
-    std::vector<Game::GameResult> getMatchHistory() const;
+    std::vector<GameResult> getMatchHistory() const;
 
     friend std::ostream& operator<<(std::ostream& stream,const GameManager& gameManager);
 
 private:
     Game* game;
-    std::vector<Game::GameResult> matchHistory;
+    std::vector<GameResult> matchHistory;
     unsigned int numRounds;
 };
 
