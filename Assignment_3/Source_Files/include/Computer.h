@@ -8,7 +8,7 @@ public:
     explicit Computer(int playerNumber);
     ~Computer() override;
 
-    PlayerChoice getPlayerChoice() override;
+    PlayerChoice::Choice getPlayerChoice() override;
 
 private:
 

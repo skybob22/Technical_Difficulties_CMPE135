@@ -1,9 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "PlayerChoice.h"
 #include "Player.h"
+#include "GameResult.h"
+#include "PlayerChoice.h"
 #include <vector>
+#include <ostream>
 
 class Game{
 public:
@@ -13,15 +15,6 @@ public:
         EVE
     };
 
-    struct GameResult{
-        std::vector<PlayerChoice> playerChoices;
-        int winner;
-
-        GameResult():playerChoices(0),winner(0){
-
-        }
-    };
-
     explicit Game(GameMode);
     ~Game();
 
@@ -29,6 +22,8 @@ public:
     GameResult getResult() const;
 
 private:
+    int gameEval(std::vector<PlayerChoice::Choice> choices);
+
     std::vector<Player*> players;
     GameResult result;
 };

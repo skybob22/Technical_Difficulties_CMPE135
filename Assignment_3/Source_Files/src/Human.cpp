@@ -18,23 +18,30 @@ Human::~Human() = default;
  * @brief Used to get the choice of a human player
  * @return The choice that the user has selected
  */
-PlayerChoice Human::getPlayerChoice(){
-    //TODO: Write code to get choice from user
-    char choice;
-    std::cout << "Rock, Paper, or Scissors? Press r, p, or s respectively: " << std::endl;
-
-    // Is this technically what we're supposed to do? I feel like there's more encapsulation we can do to avoid having to add more cases here?
-    while(1) {
-        std::cin >> choice;
-
-        switch (choice) {
-            case 'r':
-                return PlayerChoice::Rock;
-            case 'p':
-                return PlayerChoice::Paper;
-            case 's':
-                return PlayerChoice::Scissors;
+PlayerChoice::Choice Human::getPlayerChoice(){
+    std::vector<PlayerChoice::Choice> validOptions = PlayerChoice::getEnumList();
+    std::string choiceList;
+    for(unsigned int i=0;i<validOptions.size();i++){
+        choiceList += PlayerChoice::toString(validOptions[i]);
+        if(i < validOptions.size()-1){
+            choiceList += ", ";
         }
-        std::cout << "Invalid choice, please try again: " << std::endl;
+        if(i == validOptions.size()-2){
+            choiceList += "or ";
+        }
+    }
+    std::cout << std::endl << "Select Option: Options are " << choiceList << std::endl;
+
+    std::string userInput;
+    while(true) {
+        std::cout << "Player " << getPlayerNumber() << ":";
+        std::getline(std::cin,userInput);
+
+        try{
+            return PlayerChoice::stringToChoice(userInput);
+        }
+        catch(std::invalid_argument& e){
+            std::cout << "Invalid option, please try again" << std::endl;
+        }
     }
 }
