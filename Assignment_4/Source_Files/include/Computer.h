@@ -8,10 +8,14 @@ public:
     explicit Computer(int playerNumber);
     ~Computer() override;
 
-    PlayerChoice::Choice getPlayerChoice() override;
+    enum Difficulty{
+        Easy,
+        Hard
+    };
+    static Computer* createComputer(Difficulty diff,int playerNum);
 
-private:
-
+protected:
+    static PlayerChoice::Choice getRandomChoice(); //Used by multiple sub-classes
 };
 
 #endif

@@ -45,7 +45,10 @@ Player* Player::createPlayer(PlayerType type, int playerNumber){
             return new class Human(playerNumber);
         }
         case PlayerType::Computer:{
-            return new class Computer(playerNumber);
+            //TODO: Change how difficulty is selected
+            //Temporarily hard-coded to hard difficulty until selection is implemented
+            Computer::Difficulty temp = Computer::Difficulty::Hard;
+            return Computer::createComputer(temp,playerNumber);
         }
         default:{
             throw std::invalid_argument("Player must be either Human or Computer");

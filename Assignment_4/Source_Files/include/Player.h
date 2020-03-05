@@ -11,7 +11,7 @@ public:
 
     int getPlayerNumber() const;
     virtual PlayerChoice::Choice getPlayerChoice() = 0;
-    virtual void notifyPlayer(const GameResult result);
+    virtual void notifyPlayer(GameResult result);
 
     enum PlayerType{
         Human,

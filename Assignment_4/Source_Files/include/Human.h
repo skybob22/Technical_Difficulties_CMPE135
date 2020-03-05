@@ -9,9 +9,6 @@ public:
     ~Human() override;
 
     PlayerChoice::Choice getPlayerChoice() override;
-
-private:
-
 };
 
 #endif
