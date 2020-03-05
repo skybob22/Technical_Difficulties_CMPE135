@@ -15,10 +15,12 @@ Unit Tests:
 
 #==============================Running the Program==============================#
 Application:
-  To run the application run: './[Application_Name]'
+  Navigate to the root assignment directory
+  To run the application run: './Build/[Application_Name]'
 
 Unit Tests:
-  To run the unit tests run: './[Unit_Tests_Name]'
+  Navigate to the root assignment directory
+  To run the unit tests run: './Build/[Unit_Tests_Name]'
   This will run the test-suite and show how many/which tests passed/failed
 
   If you want to run only specific test(s) or omit certain test(s) you can add the following when running the program
