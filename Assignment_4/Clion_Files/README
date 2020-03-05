@@ -1,0 +1,8 @@
+This is a sub-directory intended to be used with Clion for the compilation database (allows Clion's code completeion and intellisense to work) and the IDE settings folders
+All files except for the makefile and a couple specific files are gitignored so that Clion's settings and inner-working files are not added to the git repository
+
+The makefile in this folder is designed to pull from the primary makefile in the build directory so that any changes made to it are reflected by this one without having to modify it.
+
+
+
+Instructions for setting up and using Clion with these projects/makefiles may be added later [I may add instructions later]
