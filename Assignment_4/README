@@ -1,6 +1,0 @@
-DO NOT MODIFY THIS FOLDER/FILES
-
-This 'Assignment_Template' serves as a starter template for creating assignment directories which have a working makefile and gtest already configured
-When starting a new programming assignment, copy the 'Assignment_Template' folder and rename it accordingly, then adjust the contents as needed
-
-Make sure to adjust the contents of the copied files such as the application names in the copied README and INSTALL files
