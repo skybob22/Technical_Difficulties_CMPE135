@@ -1,8 +1,21 @@
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 #include "Player.h"
 #include "Human.h"
 #include "Computer.h"
+
+//Define a map that is used to convert an enum into a string (since c++ can't to it automatically)
+const std::unordered_map<Player::PlayerType,std::string> Player::TYPE_TO_STRING_MAP = {
+        {Player::PlayerType::Human,"Human"},
+        {Player::PlayerType::Computer,"Computer"}
+};
+
+//Define a map that is used to convert a string into an enum
+const std::unordered_map<std::string,Player::PlayerType> Player::STRING_TO_TYPE_MAP = {
+        {"human",Player::PlayerType::Human},{"h",Player::PlayerType::Human},
+        {"computer",Player::PlayerType::Computer},{"c",Player::PlayerType::Computer}
+};
 
 /**
  * @brief Initializes various attributes of a player object
@@ -46,27 +59,56 @@ Player* Player::createPlayer(PlayerType type, int playerNumber){
             return new class Human(playerNumber);
         }
         case PlayerType::Computer:{
-            //TODO: Change how difficulty is selected
-            //Temporarily hard-coded to hard difficulty until selection is implemented
-            std::cout << "Choose difficulty: (E for easy, H for hard) " << std::endl;
-            char diff;
-            std::cin >> diff;
-            Computer::Difficulty temp;
+            std::cout << "Choose Difficulty: 'Easy' (random), or 'Hard' (Machine Learning " << std::endl;
+            while(true){
+                std::cout << "Difficulty:";
+                std::string diffStr;
+                std::getline(std::cin, diffStr);
 
-            switch(diff){
-                case('E'):{
-                    temp = Computer::Difficulty::Easy;
+                try{
+                    Computer::Difficulty diff = Computer::stringToDiff(diffStr);
+                    return Computer::createComputer(diff,playerNumber);
                 }
-                case('H'):{
-                    temp = Computer::Difficulty::Hard;
+                catch(std::invalid_argument& e){
+                    std::cout << "Invalid option, please try again" << std::endl;
                 }
             }
-            return Computer::createComputer(temp,playerNumber);
-
-
         }
         default:{
             throw std::invalid_argument("Player must be either Human or Computer");
         }
     }//End switch
+}
+
+/**
+ * @brief Utility function used to convert an enum into a string (used for printing values)
+ * @param val A difficulty enum
+ * @return The string representing said enum
+ * @throws std::invalid_argument If the value is not a valid value
+ */
+std::string Player::typeToString(PlayerType val){
+    auto searchVal = TYPE_TO_STRING_MAP.find(val);
+    if(searchVal != TYPE_TO_STRING_MAP.end()){
+        return searchVal->second;
+    }
+    else{
+        throw std::invalid_argument("Argument is not a valid playertype enum");
+    }
+}
+
+/**
+ * @brief Utility function used to convert a string into an enum (Used for getting user input)
+ * @param val A string representing an enum
+ * @return An enum represented by the string
+ * @throws std::invalid_argument If the string is not valid, an invalid_argument exception is thrown
+ */
+Player::PlayerType Player::stringToType(std::string val){
+    std::transform(val.begin(),val.end(),val.begin(),::tolower); //Convert string to lowercase
+    auto searchVal = STRING_TO_TYPE_MAP.find(val);
+    if(searchVal != STRING_TO_TYPE_MAP.end()){
+        return searchVal->second;
+    }
+    else{
+        throw std::invalid_argument("String does not represent an enum");
+    }
 }

@@ -66,6 +66,7 @@ int PlayerChoice::evaluateMatchup(Choice p1, Choice p2){
  * @brief Utility function to convert an enum into a string representing that enum (used for printing messages)
  * @param val The value of the enum
  * @return A string representing said enum value
+ * @throws std::invalid_argument If the enum is not a valid value
  */
 std::string PlayerChoice::toString(PlayerChoice::Choice val){
     auto searchVal = CHOICE_TO_STRING_MAP.find(val);
@@ -81,10 +82,10 @@ std::string PlayerChoice::toString(PlayerChoice::Choice val){
  * @brief Utility function to convert a string into an enum (used for getting user input)
  * @param val A string representing an enum
  * @return An enum matching said string
- * @throws invalid_argument If the string is not valid, an invalid_argument exception is thrown
+ * @throws std::invalid_argument If the string is not valid, an invalid_argument exception is thrown
  */
 PlayerChoice::Choice PlayerChoice::stringToChoice(std::string val){
-    std::transform(val.begin(),val.end(),val.begin(),[](char c){return tolower(c);}); //Convert string to lower case
+    std::transform(val.begin(),val.end(),val.begin(),::tolower); //Convert string to lowercase
     auto searchVal = STRING_TO_CHOICE_MAP.find(val);
     if(searchVal != STRING_TO_CHOICE_MAP.end()){
         return searchVal->second;

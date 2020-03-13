@@ -39,6 +39,7 @@ void GameManager::startGame(Game::GameMode gameMode){
 
     //Loop through, playing however many rounds were requested
     for(unsigned int i=0;i<numRounds;i++){
+        std::cout << std::endl << "Round " << i+1 << std::endl;
         game->playGame();
         matchHistory.push_back(game->getResult());
 
