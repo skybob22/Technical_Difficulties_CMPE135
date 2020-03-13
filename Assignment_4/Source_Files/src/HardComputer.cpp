@@ -4,16 +4,32 @@
 
 const std::string HardComputer::FILE_PATH = "./Data/ML_Data.csv";
 std::mutex HardComputer::FILE_LOCK;
+const unsigned int HardComputer::HISTORY_LENGTH = 4;
 
 /**
  * @brief Creates a HardComputer object
  * @param playerNum The player number (1,2...)
  */
 HardComputer::HardComputer(int playerNum):Computer(playerNum){
+    parseFromFile(FILE_PATH);
+}
+
+/**
+ * @brief Destroys a HardComputer object
+ */
+HardComputer::~HardComputer(){
+    writeToFile(FILE_PATH);
+}
+
+/**
+ * @brief Reads in history from a file
+ * @param filename The filename/path to read from
+ */
+void HardComputer::parseFromFile(std::string filename){
     std::lock_guard<std::mutex> fileLock(FILE_LOCK);
     //Read in file
     std::ifstream dataFile;
-    dataFile.open(FILE_PATH);
+    dataFile.open(filename);
     if(!dataFile.is_open()){
         //Unable to read file, start with empty list
         return;
@@ -33,7 +49,7 @@ HardComputer::HardComputer(int playerNum):Computer(playerNum){
             std::getline(line, tempString); //Get rest/second half of line
             second << tempString;
 
-            //Parse the comma separated 4-choice sequence into a deque
+            //Parse the comma separated n-choice sequence into a deque
             std::deque<PlayerChoice::Choice> choiceSequence;
             while (std::getline(first, tempString, ',')) {
                 choiceSequence.push_back(PlayerChoice::stringToChoice(tempString));
@@ -56,17 +72,18 @@ HardComputer::HardComputer(int playerNum):Computer(playerNum){
 }
 
 /**
- * @brief Destroys a HardComputer object
+ * @brief Writes the current learned history to a file
+ * @param filename The filename/path to write to
  */
-HardComputer::~HardComputer(){
+void HardComputer::writeToFile(std::string filename){
     std::lock_guard<std::mutex> fileLock(FILE_LOCK);
     //Write to file
     std::ofstream dataFile;
-    dataFile.open(FILE_PATH);
+    dataFile.open(filename);
 
     for(auto entry : historyMap){
         for(std::pair<PlayerChoice::Choice,unsigned long> subEntry : entry.second) {
-            //Print the 4-choice sequence
+            //Print the n-choice sequence
             for (unsigned int j = 0; j < std::get<0>(entry).size(); j++) {
                 dataFile << PlayerChoice::toString(std::get<0>(entry)[j]);
                 if (j < std::get<0>(entry).size() - 1) {
@@ -74,7 +91,7 @@ HardComputer::~HardComputer(){
                     dataFile << ',';
                 }
             }
-            //Print the player choice(s) after the previous 4-long sequence
+            //Print the player choice(s) after the previous n-long sequence
             dataFile << ':' << PlayerChoice::toString(std::get<0>(subEntry)) << ',' << std::get<1>(subEntry);
             dataFile << std::endl << std::flush;
         }
@@ -87,11 +104,6 @@ HardComputer::~HardComputer(){
  * @return The (hopefully) winning choice
  */
 PlayerChoice::Choice HardComputer::getPlayerChoice(){
-    if(matchHistory.size() < 4){
-        //If not enough matches have been played, there is no recognizable pattern, return random value
-        return Computer::getRandomChoice();
-    }
-
     //Use ML algorithm, check if current pattern exists in map
     auto pattMatch = historyMap.find(matchHistory);
     if(pattMatch == historyMap.end() || pattMatch->second.empty()){
@@ -135,15 +147,15 @@ void HardComputer::notifyPlayer(const GameResult result){
     PlayerChoice::Choice opChoice = result.playerChoices[1-(getPlayerNumber()-1)];
     PlayerChoice::Choice myChoice = result.playerChoices[getPlayerNumber()-1];
 
-    if(matchHistory.size() >= 4){
-        /*
-         * Add the current pattern to the history
-         * Increments value if already in map, otherwise adds it
-         * Initialization of unsigned long has defined behavior of 0
-         */
-        historyMap[matchHistory][opChoice]++;
+    /*
+     * Add the current pattern to the history
+     * Increments value if already in map, otherwise adds it
+     * Initialization of unsigned long has defined behavior of 0
+     */
+    historyMap[matchHistory][opChoice]++;
 
-        //Then modify match history
+    if(matchHistory.size() >= (HISTORY_LENGTH-(HISTORY_LENGTH%2))){
+        //If we are at the desired history length, remove the first 2 entries to keep the same length (Since we're adding 2)
         matchHistory.erase(matchHistory.begin(),matchHistory.begin()+2); //Remove the first two to make room
     }
     matchHistory.push_back(opChoice);
