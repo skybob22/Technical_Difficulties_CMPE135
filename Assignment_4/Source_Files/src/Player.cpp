@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <iostream>
 #include "Player.h"
 #include "Human.h"
 #include "Computer.h"
@@ -47,8 +48,22 @@ Player* Player::createPlayer(PlayerType type, int playerNumber){
         case PlayerType::Computer:{
             //TODO: Change how difficulty is selected
             //Temporarily hard-coded to hard difficulty until selection is implemented
-            Computer::Difficulty temp = Computer::Difficulty::Hard;
+            std::cout << "Choose difficulty: (E for easy, H for hard) " << std::endl;
+            char diff;
+            std::cin >> diff;
+            Computer::Difficulty temp;
+
+            switch(diff){
+                case('E'):{
+                    temp = Computer::Difficulty::Easy;
+                }
+                case('H'):{
+                    temp = Computer::Difficulty::Hard;
+                }
+            }
             return Computer::createComputer(temp,playerNumber);
+
+
         }
         default:{
             throw std::invalid_argument("Player must be either Human or Computer");
