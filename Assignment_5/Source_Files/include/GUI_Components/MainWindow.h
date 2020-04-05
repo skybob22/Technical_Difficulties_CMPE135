@@ -15,6 +15,7 @@ public:
     void OnExit(wxCommandEvent& evt);
     void OnAbout(wxCommandEvent& evt);
     void OnSetRounds(wxCommandEvent& evt);
+    void OnSetDifficulty(wxCommandEvent& evt);
     void OnStartGame(wxCommandEvent& evt);
     void OnEndGame(wxCommandEvent& evt);
     wxDECLARE_EVENT_TABLE();
@@ -33,7 +34,9 @@ private:
         RPS_ABOUT,
         RPS_START_GAME,
         RPS_END_GAME,
-        RPS_SET_ROUNDS
+        RPS_SET_ROUNDS,
+        RPS_EASY,
+        RPS_HARD
     };
 
 };

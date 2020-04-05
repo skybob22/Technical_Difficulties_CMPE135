@@ -4,9 +4,7 @@ wxIMPLEMENT_APP(RPSApp);
 
 RPSApp::RPSApp() = default;
 
-RPSApp::~RPSApp(){
-    delete m_frame1;
-}
+RPSApp::~RPSApp() = default;
 
 bool RPSApp::OnInit(){
     m_frame1 = new MainWindow("Roshambo Anytime");
