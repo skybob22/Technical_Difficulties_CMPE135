@@ -24,15 +24,23 @@ wxBEGIN_EVENT_TABLE(MainWindow,wxFrame)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnInit(){
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
     choicesPanel = new ButtonPanel(this);
+    sizer->Add(choicesPanel);
     choicesPanel->Show();
 
-    //choiceLabel = new wxStaticText(this,wxID_ANY,"Player Choice: ");
-    //choiceLabel->Show();
+    wxBoxSizer* choiceBox = new wxBoxSizer(wxHORIZONTAL);
+    choiceLabel = new wxStaticText(this,wxID_ANY,"Player Choice: ");
+    choiceBox->Add(choiceLabel);
+    choiceLabel->Show();
 
-    //playerChoice = new wxStaticText(this,wxID_ANY,"");
-    //playerChoice->Show();
+    playerChoice = new wxStaticText(this,wxID_ANY,"");
+    choiceBox->Add(playerChoice);
+    playerChoice->Show();
+    sizer->Add(choiceBox);
 
+    this->SetSizer(sizer);
 }
 
 void MainWindow::InitMenu(){
@@ -62,10 +70,7 @@ void MainWindow::InitMenu(){
 }
 
 void MainWindow::OnButtonClicked(wxCommandEvent& evt){
-    //Temporary text box to ensure that buttons are working properly
-    wxMessageBox(wxString::Format("Temp: You selected %s",PlayerChoice::toString(static_cast<PlayerChoice::Choice>(evt.GetId()))));
-
-    //playerChoice->SetLabelText(PlayerChoice::toString(static_cast<PlayerChoice::Choice>(evt.GetId())));
+    playerChoice->SetLabelText(PlayerChoice::toString(static_cast<PlayerChoice::Choice>(evt.GetId())));
     evt.Skip();
 }
 
