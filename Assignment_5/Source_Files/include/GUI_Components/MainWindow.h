@@ -16,6 +16,7 @@ public:
     void OnAbout(wxCommandEvent& evt);
     void OnSetRounds(wxCommandEvent& evt);
     void OnStartGame(wxCommandEvent& evt);
+    void OnEndGame(wxCommandEvent& evt);
     wxDECLARE_EVENT_TABLE();
 
 private:
@@ -31,6 +32,7 @@ private:
         RPS_EXIT,
         RPS_ABOUT,
         RPS_START_GAME,
+        RPS_END_GAME,
         RPS_SET_ROUNDS
     };
 

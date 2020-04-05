@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "PlayerChoice.h"
+#include <wx/numdlg.h>
 
 MainWindow::MainWindow(wxString title):wxFrame(nullptr,wxID_ANY,title){
     OnInit();
@@ -13,6 +14,7 @@ wxBEGIN_EVENT_TABLE(MainWindow,wxFrame)
     EVT_MENU(RPS_ABOUT,MainWindow::OnAbout)
     EVT_MENU(RPS_SET_ROUNDS,MainWindow::OnSetRounds)
     EVT_MENU(RPS_START_GAME,MainWindow::OnStartGame)
+    EVT_MENU(RPS_END_GAME,MainWindow::OnEndGame)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnInit(){
@@ -35,7 +37,9 @@ void MainWindow::InitMenu(){
 
     wxMenu* gameMenu = new wxMenu;
     gameMenu->Append(RPS_SET_ROUNDS,"Set Number of Rounds");
-    gameMenu->Append(RPS_START_GAME,"Start Game");
+    gameMenu->AppendSeparator();
+    gameMenu->Append(RPS_START_GAME,"Start/Restart Game");
+    gameMenu->Append(RPS_END_GAME,"End Game");
 
     wxMenu* helpMenu = new wxMenu;
     helpMenu->Append(RPS_ABOUT,"About");
@@ -46,28 +50,44 @@ void MainWindow::InitMenu(){
     SetMenuBar(menuBar);
 }
 
-void MainWindow::OnButtonClicked(wxCommandEvent &evt){
-    //We may need to move this up to the paren in order to handle both "Set Player Choice" and  "Run Game" events
+void MainWindow::OnButtonClicked(wxCommandEvent& evt){
+    //Temporary text box to ensure that buttons are working properly
+    wxMessageBox(wxString::Format("Temp: You selected %s",PlayerChoice::toString(static_cast<PlayerChoice::Choice>(evt.GetId()))));
+    
     //playerChoice->SetLabelText(PlayerChoice::toString(static_cast<PlayerChoice::Choice>(evt.GetId())));
     evt.Skip();
 }
 
-void MainWindow::OnExit(wxCommandEvent &evt){
+void MainWindow::OnExit(wxCommandEvent& evt){
     Close(true);
     evt.Skip();
 }
 
-void MainWindow::OnAbout(wxCommandEvent &evt){
+void MainWindow::OnAbout(wxCommandEvent& evt){
+    wxMessageBox(wxString::Format(
+            "This is a Gui-Based Rock-Paper-Scissors game\n"
+            "Built by: Jonathan Beard, Cameron Lofy, George Makhoul & Steven West\n\n"
+            "Framework: %s\n"
+            "Platform: %s.",
+            wxVERSION_STRING,
+            wxGetOsDescription()
+            ),"About the program",
+                    wxOK | wxICON_INFORMATION,
+                    this);
+    evt.Skip();
+}
+
+void MainWindow::OnSetRounds(wxCommandEvent& evt){
+    long numRounds  = wxGetNumberFromUser("Enter Number of Rounds","Rounds","Round Selection");
+    evt.Skip();
+}
+
+void MainWindow::OnStartGame(wxCommandEvent& evt){
 
     evt.Skip();
 }
 
-void MainWindow::OnSetRounds(wxCommandEvent &evt){
-
-    evt.Skip();
-}
-
-void MainWindow::OnStartGame(wxCommandEvent &evt){
+void MainWindow::OnEndGame(wxCommandEvent& evt){
 
     evt.Skip();
 }
