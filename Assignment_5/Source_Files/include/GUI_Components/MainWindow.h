@@ -3,6 +3,9 @@
 
 #include "wx/wx.h"
 #include "ButtonPanel.h"
+#include "GameManager.h"
+
+class GameManager; //Forward declaration
 
 class MainWindow : public wxFrame{
 public:
@@ -21,13 +24,24 @@ public:
     wxDECLARE_EVENT_TABLE();
 
 private:
+    //Application code
+    GameManager* gameManager;
+
+    //Gui code
     void OnInit();
     void InitMenu();
 
     wxMenuBar* menuBar;
-    ButtonPanel* choicesPanel;
-    wxStaticText* choiceLabel;
+
+    //Updated display text
+    wxStaticText* currentRound;
     wxStaticText* playerChoice;
+    wxStaticText* computerPrediction;
+    wxStaticText* computerChoice;
+    wxStaticText* winner;
+    wxStaticText* humanWins;
+    wxStaticText* computerWins;
+    wxStaticText* ties;
 
     enum{
         RPS_EXIT,

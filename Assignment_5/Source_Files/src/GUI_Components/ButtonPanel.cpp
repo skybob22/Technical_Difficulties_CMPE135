@@ -2,7 +2,7 @@
 #include "PlayerChoice.h"
 #include "MainWindow.h"
 
-ButtonPanel::ButtonPanel(wxFrame* parent): wxPanel(parent,wxID_ANY){
+ButtonPanel::ButtonPanel(wxPanel* parent,wxFrame* handler): wxPanel(parent,wxID_ANY),handler(handler){
     OnInit();
 }
 
@@ -11,22 +11,28 @@ ButtonPanel::~ButtonPanel() = default;
 void ButtonPanel::OnInit(){
     //TODO: Resize the buttons and sizer so that they don't take up the entire window
 
+    wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+
+    choiceLabel = new wxStaticText(this,wxID_ANY,"Choices:");
+    sizer->Add(choiceLabel);
+    sizer->AddSpacer(0);
+
     //Create a sub-panel so that the buttons don't expand to the entire height of the window
-    wxPanel* subPanel = new wxPanel(this,wxID_ANY);
-    wxSizer* subPanelSizer = new wxBoxSizer(wxHORIZONTAL);
-    this->SetSizer(subPanelSizer);
-    subPanelSizer->Add(subPanel,1,wxALIGN_CENTER_VERTICAL);
+    wxPanel* subPanelGrid = new wxPanel(this,wxID_ANY);
 
     //Create grid of choice buttons (currently only 3, but expandable)
     std::vector<PlayerChoice::Choice> playerChoiceList = PlayerChoice::getEnumList();
-    wxGridSizer* grid = new wxGridSizer(1,playerChoiceList.size(),1,1);
-    subPanel->SetSizer(grid);
+    wxGridSizer* grid = new wxGridSizer(1,playerChoiceList.size(),2,2);
+
     for(PlayerChoice::Choice option : playerChoiceList){
-        wxButton* button = new wxButton(this,option,PlayerChoice::toString(option));
-        button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,&MainWindow::OnButtonClicked,dynamic_cast<MainWindow*>(m_parent));
-        grid->Add(button,1,wxEXPAND);
+        wxButton* button = new wxButton(subPanelGrid,option,PlayerChoice::toString(option));
+        button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,&MainWindow::OnButtonClicked,dynamic_cast<MainWindow*>(handler));
+        grid->Add(button);
         choiceButtons.push_back(button);
     }
     grid->Layout();
+    subPanelGrid->SetSizer(grid);
+    sizer->Add(subPanelGrid,-1,wxALIGN_CENTER_HORIZONTAL);
 
+    this->SetSizer(sizer);
 }

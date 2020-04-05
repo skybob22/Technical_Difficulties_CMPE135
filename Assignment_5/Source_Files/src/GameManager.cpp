@@ -5,7 +5,7 @@
 /**
  * @brief Constructs a GameManager object with the default number of rounds set to 20
  */
-GameManager::GameManager():game(nullptr),matchHistory(0),numRounds(20){
+GameManager::GameManager():game(nullptr),matchHistory(0),numRounds(20),gameStarted(false){
 
 }
 
@@ -25,6 +25,19 @@ void GameManager::setNumRounds(unsigned int numberOfRounds){
     this->numRounds = numberOfRounds;
 }
 
+unsigned int GameManager::getNumRounds(){
+    return numRounds;
+}
+
+unsigned int GameManager::getRound(){
+    //TODO: Temporary return value, update to reflect actual game status
+    if(!gameStarted){
+        return 0;
+    }
+
+    return 1;
+}
+
 /**
  * @brief Starts the game and plays the previously set number of rounds
  * @param gameMode The type of gamemode to be use e.g PVP, PVE, or EVE
@@ -32,6 +45,7 @@ void GameManager::setNumRounds(unsigned int numberOfRounds){
 void GameManager::startGame(Game::GameMode gameMode){
     //Create a new game object with the correct game mode
     game = new Game(gameMode);
+    gameStarted = true;
 
     //Clear match history for new round of games, and allocate size for needed number of rounds
     matchHistory.clear();
@@ -48,6 +62,10 @@ void GameManager::startGame(Game::GameMode gameMode){
     }
     delete game;
     game = nullptr;
+}
+
+void GameManager::endGame(){
+    gameStarted = false;
 }
 
 /**
