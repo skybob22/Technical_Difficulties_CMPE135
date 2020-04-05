@@ -9,7 +9,7 @@ RPSApp::~RPSApp(){
 }
 
 bool RPSApp::OnInit(){
-    m_frame1 = new MainWindow;
+    m_frame1 = new MainWindow("Roshambo Anytime");
     m_frame1->Show();
 
     return true;

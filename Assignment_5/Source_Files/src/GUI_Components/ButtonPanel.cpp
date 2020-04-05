@@ -1,7 +1,8 @@
 #include "ButtonPanel.h"
 #include "PlayerChoice.h"
+#include "MainWindow.h"
 
-ButtonPanel::ButtonPanel(wxWindow* parent): wxPanel(parent,wxID_ANY){
+ButtonPanel::ButtonPanel(wxFrame* parent): wxPanel(parent,wxID_ANY){
     OnInit();
 }
 
@@ -14,7 +15,7 @@ void ButtonPanel::OnInit(){
     wxPanel* subPanel = new wxPanel(this,wxID_ANY);
     wxSizer* subPanelSizer = new wxBoxSizer(wxHORIZONTAL);
     this->SetSizer(subPanelSizer);
-    subPanelSizer->Add(subPanel,1);
+    subPanelSizer->Add(subPanel,1,wxALIGN_CENTER_VERTICAL);
 
     //Create grid of choice buttons (currently only 3, but expandable)
     std::vector<PlayerChoice::Choice> playerChoiceList = PlayerChoice::getEnumList();
@@ -22,15 +23,10 @@ void ButtonPanel::OnInit(){
     subPanel->SetSizer(grid);
     for(PlayerChoice::Choice option : playerChoiceList){
         wxButton* button = new wxButton(this,option,PlayerChoice::toString(option));
-        button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,&ButtonPanel::OnButtonClicked,this);
+        button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,&MainWindow::OnButtonClicked,dynamic_cast<MainWindow*>(m_parent));
         grid->Add(button,1,wxEXPAND);
         choiceButtons.push_back(button);
     }
     grid->Layout();
 
-}
-
-void ButtonPanel::OnButtonClicked(wxCommandEvent &evt){
-    //We may need to move this up to the paren in order to handle both "Set Player Choice" and  "Run Game" events
-    evt.Skip();
 }

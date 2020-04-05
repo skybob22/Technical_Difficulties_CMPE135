@@ -5,12 +5,12 @@
 
 class ButtonPanel : public wxPanel{
 public:
-    explicit ButtonPanel(wxWindow* parent);
+    explicit ButtonPanel(wxFrame* parent);
     ~ButtonPanel() override;
 
 private:
     void OnInit();
-    void OnButtonClicked(wxCommandEvent& evt);
+
 
     std::vector<wxButton*> choiceButtons;
 };
