@@ -1,0 +1,38 @@
+#===============Directories and Variables===============#
+#Names of the applications
+APP_NAME := Technical_Difficulties.app
+TESTS_NAME := UnitTests.app
+
+#Names of the object directories
+APP_OBJ_DIR_NAME := App_Object_Files
+TESTS_OBJ_DIR_NAME := Test_Object_Files
+
+#Extentions to compile
+EXTENTIONS := .cpp .cc
+
+
+#Base directory where all the source code is located
+#ROOT_DIR must be defined in calling makefile
+CODE_DIR := $(ROOT_DIR)/Source_Files
+
+#Directories with application code
+APP_INC_DIR := $(CODE_DIR)/include
+GUI_INC_DIR := $(APP_INC_DIR)/GUI_Components
+APP_SRC_DIR := $(CODE_DIR)/src
+GUI_SRC_DIR := $(APP_SRC_DIR)/GUI_Components
+
+#Directories with unit testing code
+TEST_DIR := $(CODE_DIR)/test
+GTEST_DIR := $(TEST_DIR)/gtest_source
+GTEST_INC_DIR := $(GTEST_DIR)/include
+GTEST_SRC_DIR := $(GTEST_DIR)/src
+
+
+#Main files to include/exclude to fix potential issues with multiple mains
+APP_MAIN := $(APP_SRC_DIR)/main.cpp
+TEST_MAIN := $(GTEST_SRC_DIR)/gtest_main.cpp
+
+
+#All directories that need to be compiled here
+ALL_SRC_DIR_APP := $(APP_SRC_DIR) $(APP_INC_DIR) $(GUI_SRC_DIR) $(GUI_INC_DIR)
+ALL_SRC_DIR_TEST := $(TEST_DIR) $(GTEST_DIR) $(GTEST_SRC_DIR) $(GTEST_INC_DIR)
