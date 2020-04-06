@@ -134,7 +134,10 @@ void MainWindow::OnInit(){
 
     winner = new wxStaticText(winnerPanel,wxID_ANY,"");
     winnerSizer->Add(winnerLabel,1,wxALIGN_LEFT);
+    winnerSizer->AddSpacer(1);
     winnerSizer->Add(winner,1,wxALIGN_LEFT);
+    winnerSizer->AddSpacer(20);
+
     winnerPanel->SetSizer(winnerSizer);
     sizer->Add(winnerPanel,1,wxALIGN_CENTRE_HORIZONTAL);
     //Space
