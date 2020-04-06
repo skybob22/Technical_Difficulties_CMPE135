@@ -31,43 +31,57 @@ void MainWindow::OnInit(){
     //TODO: All labels start with default value N/A, maybe adjust later?
     //TODO: Positioning is all wonky, will want to adjust
     //TODO: Text sometimes doesn't show/resize properly. Try to find out why
-    
+
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
     //Add current round panel
     wxPanel* roundPanel = new wxPanel(this,wxID_ANY);
     wxBoxSizer* roundPanelSizer = new wxBoxSizer(wxHORIZONTAL);
     wxStaticText* roundLabel = new wxStaticText(roundPanel,wxID_ANY,"Round: ");
+    wxFont boldFont = roundLabel->GetFont();
+    boldFont.SetPointSize(14);
+    boldFont.SetWeight(wxFONTWEIGHT_BOLD);
+    //roundLabel->SetFont(boldFont);
+
+
     currentRound = new wxStaticText(roundPanel,wxID_ANY,"0 / 0");
     roundPanelSizer->Add(roundLabel,1);
     roundPanelSizer->Add(currentRound,1);
     roundPanel->SetSizer(roundPanelSizer);
     sizer->Add(roundPanel,1,wxALIGN_CENTER_HORIZONTAL);
     //Space
-    sizer->AddSpacer(10);
+    //sizer->AddSpacer(1);
 
 
     //Add human panel
     wxPanel* humanPanel = new wxPanel(this,wxID_ANY);
     wxBoxSizer* humanSizer = new wxBoxSizer(wxVERTICAL);
     wxStaticText* humanLabel = new wxStaticText(humanPanel,wxID_ANY,"Human");
-    humanSizer->Add(humanLabel,1,wxALIGN_CENTER_HORIZONTAL);
+    humanLabel->SetFont(boldFont);
+    humanSizer->Add(humanLabel,0,wxALIGN_CENTER_HORIZONTAL);
 
     //Add user choice buttons
     ButtonPanel* choicesPanel = new ButtonPanel(humanPanel,this);
+
     humanSizer->Add(choicesPanel,1,wxALIGN_CENTER_HORIZONTAL);
+
+
 
     //Add user choice panel
     wxPanel* userChoicePanel = new wxPanel(humanPanel,wxID_ANY);
     wxBoxSizer* choicePanelSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText* choiceLabel = new wxStaticText(userChoicePanel,wxID_ANY,"Human Choice: ");
-    playerChoice = new wxStaticText(userChoicePanel,wxID_ANY,"N/A");
-    choicePanelSizer->Add(choiceLabel,1);
+    //wxStaticText* choiceLabel = new wxStaticText(userChoicePanel,wxID_ANY,"Human Choice: ");
+    playerChoice = new wxStaticText(userChoicePanel,wxID_ANY,"Human Choice: N/A          ");
+    //choicePanelSizer->Add(choiceLabel,1);
     choicePanelSizer->Add(playerChoice,1);
-    humanSizer->Add(userChoicePanel,1,wxALIGN_CENTRE_HORIZONTAL);
+    humanSizer->Add(userChoicePanel,2,wxALIGN_CENTRE_HORIZONTAL);
+
 
     humanPanel->SetSizer(humanSizer);
-    sizer->Add(humanPanel,1,wxALIGN_CENTER_HORIZONTAL);
+    //humanSizer->SetSizeHints(this);
+
+    //sizer->SetSizeHints(this);
+    sizer->Add(humanPanel,2,wxALIGN_CENTER_HORIZONTAL);
 
 
 
@@ -76,6 +90,7 @@ void MainWindow::OnInit(){
     wxBoxSizer* computerInfoSizer = new wxBoxSizer(wxVERTICAL);
 
     wxStaticText* computerLabel = new wxStaticText(computerInfoPanel,wxID_ANY,"Computer");
+    computerLabel->SetFont(boldFont);
     computerInfoSizer->Add(computerLabel,1,wxALIGN_CENTER_HORIZONTAL);
 
     //Computer prediction
@@ -87,7 +102,7 @@ void MainWindow::OnInit(){
     computerPredictionSizer->Add(computerPrediction,1);
     computerPredictionPanel->SetSizer(computerPredictionSizer);
     computerInfoSizer->Add(computerPredictionPanel,1,wxALIGN_CENTRE_HORIZONTAL);
-    computerInfoSizer->AddSpacer(5);
+    //computerInfoSizer->AddSpacer(2);
 
     //Computer Choice
     wxPanel* computerChoicePanel = new wxPanel(computerInfoPanel,wxID_ANY);
@@ -102,20 +117,21 @@ void MainWindow::OnInit(){
 
     sizer->Add(computerInfoPanel,1,wxALIGN_CENTER_HORIZONTAL);
     //Space
-    sizer->AddSpacer(10);
+    sizer->AddSpacer(50);
 
 
     //Add winner panel
     wxPanel* winnerPanel = new wxPanel(this,wxID_ANY);
     wxBoxSizer* winnerSizer = new wxBoxSizer(wxHORIZONTAL);
     wxStaticText* winnerLabel = new wxStaticText(winnerPanel,wxID_ANY,"Winner: ");
+
     winner = new wxStaticText(winnerPanel,wxID_ANY,"N/A");
     winnerSizer->Add(winnerLabel,1);
     winnerSizer->Add(winner,1);
     winnerPanel->SetSizer(winnerSizer);
     sizer->Add(winnerPanel,1,wxALIGN_CENTRE_HORIZONTAL);
     //Space
-    sizer->AddSpacer(10);
+    //sizer->AddSpacer(2);
 
 
 
@@ -125,6 +141,7 @@ void MainWindow::OnInit(){
     wxBoxSizer* statisticsSizer = new wxBoxSizer(wxVERTICAL);
 
     wxStaticText* statisticsLabel = new wxStaticText(statisticsPanel,wxID_ANY,"Statistics");
+    statisticsLabel->SetFont(boldFont);
     statisticsSizer->Add(statisticsLabel,1,wxALIGN_CENTER_HORIZONTAL);
 
     //Human wins
@@ -158,7 +175,7 @@ void MainWindow::OnInit(){
     statisticsSizer->Add(tiesPanel,1,wxALIGN_CENTRE_HORIZONTAL);
     statisticsPanel->SetSizer(statisticsSizer);
     sizer->Add(statisticsPanel,1,wxALIGN_CENTRE_HORIZONTAL);
-
+    sizer->SetSizeHints(this);
     this->SetSizer(sizer);
 }
 

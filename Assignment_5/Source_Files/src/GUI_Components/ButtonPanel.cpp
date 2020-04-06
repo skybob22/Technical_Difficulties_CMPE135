@@ -15,7 +15,7 @@ void ButtonPanel::OnInit(){
 
     choiceLabel = new wxStaticText(this,wxID_ANY,"Choices:");
     sizer->Add(choiceLabel);
-    sizer->AddSpacer(0);
+    //sizer->AddSpacer(0);
 
     //Create a sub-panel so that the buttons don't expand to the entire height of the window
     wxPanel* subPanelGrid = new wxPanel(this,wxID_ANY);
@@ -27,12 +27,12 @@ void ButtonPanel::OnInit(){
     for(PlayerChoice::Choice option : playerChoiceList){
         wxButton* button = new wxButton(subPanelGrid,option,PlayerChoice::toString(option));
         button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,&MainWindow::OnButtonClicked,dynamic_cast<MainWindow*>(handler));
-        grid->Add(button);
+        grid->Add(button,0,0,0);
         choiceButtons.push_back(button);
     }
     grid->Layout();
     subPanelGrid->SetSizer(grid);
-    sizer->Add(subPanelGrid,-1,wxALIGN_CENTER_HORIZONTAL);
-
+    sizer->Add(subPanelGrid,1,wxALIGN_CENTER_HORIZONTAL);
+    //sizer->SetSizeHints(this);
     this->SetSizer(sizer);
 }
