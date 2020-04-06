@@ -25,8 +25,14 @@ Game::~Game(){
     }
 }
 
+/**
+ * @brief Changes the type of player
+ * @param playerNumber Which player you want to adjust
+ * @param type The type of player to replace them with (Human/Computer)
+ * @param diff The difficulty of the computer (If type is Computer)
+ */
 void Game::setPlayerType(unsigned int playerNumber, Player::PlayerType type, ComputerDifficulty::Difficulty diff){
-    if(playerNumber-1 > players.size()){
+    if(playerNumber == 0 || playerNumber-1 > players.size()){
         throw std::length_error("Invalid player number");
     }
 

@@ -9,13 +9,20 @@
 #include "HardComputer.h"
 #include "GameResult.h"
 
+/**
+ * @brief Creates a MainWindow
+ * @param title The title of the window
+ */
 MainWindow::MainWindow(wxString title):wxFrame(nullptr,wxID_ANY,title){
+    gameManager = new GameManager;
+    gameManager->setNumRounds(20);
     OnInit();
     InitMenu();
-
-    gameManager = new GameManager;
 }
 
+/**
+ * @brief Destroys a MainWindow
+ */
 MainWindow::~MainWindow(){
     delete gameManager;
 }
@@ -33,11 +40,10 @@ wxBEGIN_EVENT_TABLE(MainWindow,wxFrame)
     EVT_MENU(RPS_HARD,MainWindow::OnSetDifficulty)
 wxEND_EVENT_TABLE()
 
+/**
+ * @brief Initializes the layout of the window
+ */
 void MainWindow::OnInit(){
-    //TODO: All labels start with default value N/A, maybe adjust later?
-    //TODO: Positioning is all wonky, will want to adjust
-    //TODO: Text sometimes doesn't show/resize properly. Try to find out why
-
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
     //Add current round panel
@@ -51,12 +57,11 @@ void MainWindow::OnInit(){
 
 
     currentRound = new wxStaticText(roundPanel,wxID_ANY,"0 / 20");
+    UpdateRound();
     roundPanelSizer->Add(roundLabel,1);
     roundPanelSizer->Add(currentRound,1);
     roundPanel->SetSizer(roundPanelSizer);
     sizer->Add(roundPanel,1,wxALIGN_CENTER_HORIZONTAL);
-    //Space
-    //sizer->AddSpacer(1);
 
 
     //Add human panel
@@ -68,10 +73,7 @@ void MainWindow::OnInit(){
 
     //Add user choice buttons
     ButtonPanel* choicesPanel = new ButtonPanel(humanPanel,this);
-
     humanSizer->Add(choicesPanel,1,wxALIGN_CENTER_HORIZONTAL);
-
-
 
     //Add user choice panel
     wxPanel* userChoicePanel = new wxPanel(humanPanel,wxID_ANY);
@@ -82,12 +84,8 @@ void MainWindow::OnInit(){
     choicePanelSizer->Add(playerChoice,1,wxALIGN_LEFT);
     userChoicePanel->SetSizer(choicePanelSizer);
     humanSizer->Add(userChoicePanel,2,wxALIGN_CENTRE_HORIZONTAL);
-
-
     humanPanel->SetSizer(humanSizer);
-    //humanSizer->SetSizeHints(this);
 
-    //sizer->SetSizeHints(this);
     sizer->Add(humanPanel,2,wxALIGN_CENTER_HORIZONTAL);
 
 
@@ -109,7 +107,6 @@ void MainWindow::OnInit(){
     computerPredictionSizer->Add(computerPrediction,1,wxALIGN_LEFT);
     computerPredictionPanel->SetSizer(computerPredictionSizer);
     computerInfoSizer->Add(computerPredictionPanel,1,wxALIGN_CENTRE_HORIZONTAL);
-    //computerInfoSizer->AddSpacer(2);
 
     //Computer Choice
     wxPanel* computerChoicePanel = new wxPanel(computerInfoPanel,wxID_ANY);
@@ -140,10 +137,6 @@ void MainWindow::OnInit(){
 
     winnerPanel->SetSizer(winnerSizer);
     sizer->Add(winnerPanel,1,wxALIGN_CENTRE_HORIZONTAL);
-    //Space
-    //sizer->AddSpacer(2);
-
-
 
 
     //Add statistics panel
@@ -185,10 +178,15 @@ void MainWindow::OnInit(){
     statisticsSizer->Add(tiesPanel,1,wxALIGN_CENTRE_HORIZONTAL);
     statisticsPanel->SetSizer(statisticsSizer);
     sizer->Add(statisticsPanel,1,wxALIGN_CENTRE_HORIZONTAL);
+
     sizer->SetSizeHints(this);
+    sizer->Layout();
     this->SetSizer(sizer);
 }
 
+/**
+ * @brief Initializes the layout of the menu bar
+ */
 void MainWindow::InitMenu(){
     menuBar = new wxMenuBar;
 
@@ -213,13 +211,18 @@ void MainWindow::InitMenu(){
     menuBar->Append(gameMenu,"Game");
     menuBar->Append(helpMenu,"Help");
     SetMenuBar(menuBar);
-    gameManager->setNumRounds(20);
 }
 
+/**
+ * @brief Updates the text for the current round
+ */
 void MainWindow::UpdateRound(){
     currentRound->SetLabelText(wxString::Format("%u / %u",gameManager->getRound(),gameManager->getNumRounds()));
 }
 
+/**
+ * @brief Updates the text of the statistics tab
+ */
 void MainWindow::UpdateStatistics(){
     std::vector<unsigned int> wins = gameManager->getNumWins();
     humanWins->SetLabelText(wxString::Format("%u",wins[1]));
@@ -227,6 +230,10 @@ void MainWindow::UpdateStatistics(){
     ties->SetLabelText(wxString::Format("%u",wins[0]));
 }
 
+/**
+ * @brief Event handler called when "Rock","Paper", or "Scissors" is clicked. Plays a round of Rock-Paper-Scissors
+ * @param evt A wxEvent
+ */
 void MainWindow::OnButtonClicked(wxCommandEvent& evt){
     if (gameManager->isGameInProgress()){
         playerChoice->SetLabelText(PlayerChoice::toString(static_cast<PlayerChoice::Choice>(evt.GetId())));
@@ -264,11 +271,19 @@ void MainWindow::OnButtonClicked(wxCommandEvent& evt){
     evt.Skip();
 }
 
+/**
+ * @brief Event handler for when "Exit: is clicked. Causes the app to quit
+ * @param evt A wxEvent
+ */
 void MainWindow::OnExit(wxCommandEvent& evt){
     Close(true);
     evt.Skip();
 }
 
+/**
+ * @brief Event handler for when "About" is clicked. Displays the info window
+ * @param evt A wxEvent
+ */
 void MainWindow::OnAbout(wxCommandEvent& evt){
     wxMessageBox(wxString::Format(
             "This is a Gui-Based Rock-Paper-Scissors game\n"
@@ -283,6 +298,10 @@ void MainWindow::OnAbout(wxCommandEvent& evt){
     evt.Skip();
 }
 
+/**
+ * @brief Event handler for when "Set number of rounds" is clicked. opens pop-up window to get numeric input
+ * @param evt A wxEvent
+ */
 void MainWindow::OnSetRounds(wxCommandEvent& evt){
     unsigned int numRounds  = wxGetNumberFromUser("Enter Number of Rounds","Rounds","Round Selection");
     gameManager->setNumRounds(numRounds);
@@ -291,6 +310,10 @@ void MainWindow::OnSetRounds(wxCommandEvent& evt){
     evt.Skip();
 }
 
+/**
+ * @brief Event handler for when difficulty option is selected. Updates the computer's difficulty
+ * @param evt A wxEvent
+ */
 void MainWindow::OnSetDifficulty(wxCommandEvent &evt){
     ComputerDifficulty::Difficulty diff = ((menuBar->FindItem(RPS_HARD)->IsChecked()))?ComputerDifficulty::Difficulty::Hard:ComputerDifficulty::Difficulty::Easy;
     if(gameManager->isGameInProgress()){
@@ -298,6 +321,10 @@ void MainWindow::OnSetDifficulty(wxCommandEvent &evt){
     }
 }
 
+/**
+ * @brief Event handler for when "Start Game" is clicked. Either starts a new game, or restarts if a game is in progress
+ * @param evt A wxEvent
+ */
 void MainWindow::OnStartGame(wxCommandEvent& evt){
     ComputerDifficulty::Difficulty diff = ((menuBar->FindItem(RPS_HARD)->IsChecked()))?ComputerDifficulty::Difficulty::Hard:ComputerDifficulty::Difficulty::Easy;
     gameManager->startGame(diff);
@@ -307,6 +334,10 @@ void MainWindow::OnStartGame(wxCommandEvent& evt){
     evt.Skip();
 }
 
+/**
+ * @brief Event handler for when "End Game" is clicked. Stops the current game
+ * @param evt A wxEvent
+ */
 void MainWindow::OnEndGame(wxCommandEvent& evt){
     gameManager->endGame();
     UpdateRound();

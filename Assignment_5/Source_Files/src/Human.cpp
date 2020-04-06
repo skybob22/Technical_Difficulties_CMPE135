@@ -1,5 +1,4 @@
 #include "Human.h"
-#include <iostream>
 
 /**
  * @brief Constructs a human player object
@@ -14,6 +13,10 @@ Human::Human(int playerNumber):Player(playerNumber){
  */
 Human::~Human() = default;
 
+/**
+ * @brief Sets the choice that will be returned by getPlayerChoice(), used by GUI
+ * @param choice The choice to be returned next time getPlayerChoice() is called
+ */
 void Human::setPlayerChoice(PlayerChoice::Choice choice){
     humanChoice = choice;
 }

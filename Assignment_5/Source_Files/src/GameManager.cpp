@@ -39,7 +39,6 @@ unsigned int GameManager::getNumRounds(){
  * @return The current round
  */
 unsigned int GameManager::getRound(){
-    //TODO: Temporary return value, update to reflect actual game status
     return currentRound;
 }
 
@@ -63,6 +62,9 @@ void GameManager::startGame(ComputerDifficulty::Difficulty diff) {
     matchHistory.reserve(numRounds);
 }
 
+/**
+ * @brief Plays 1 round of Rock Paper Scissors
+ */
 void GameManager::playRound(){
     if( currentRound <= numRounds && game != nullptr){
         game->playGame();

@@ -2,15 +2,24 @@
 #include "PlayerChoice.h"
 #include "MainWindow.h"
 
+/**
+ * @brief Creates a ButtonPanel
+ * @param parent The Wx-Widgets parent of the panel
+ * @param handler The object in charge of event handling for button clicks
+ */
 ButtonPanel::ButtonPanel(wxPanel* parent,wxFrame* handler): wxPanel(parent,wxID_ANY),handler(handler){
     OnInit();
 }
 
+/**
+ * @brief Destroys a ButtonPanel
+ */
 ButtonPanel::~ButtonPanel() = default;
 
+/**
+ * @brief Initializes the layout of a ButtonPanel
+ */
 void ButtonPanel::OnInit(){
-    //TODO: Resize the buttons and sizer so that they don't take up the entire window
-
     wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
     choiceLabel = new wxStaticText(this,wxID_ANY,"Choices:");
