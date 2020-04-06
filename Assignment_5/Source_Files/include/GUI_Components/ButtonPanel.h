@@ -1,6 +1,7 @@
 #ifndef BUTTON_FRAME_H
 #define BUTTON_FRAME_H
 
+#include <vector>
 #include "wx/wx.h"
 
 class ButtonPanel : public wxPanel{
