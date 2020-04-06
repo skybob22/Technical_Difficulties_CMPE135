@@ -30,6 +30,8 @@ private:
     //Gui code
     void OnInit();
     void InitMenu();
+    void UpdateRound();
+    void UpdateStatistics();
 
     wxMenuBar* menuBar;
 

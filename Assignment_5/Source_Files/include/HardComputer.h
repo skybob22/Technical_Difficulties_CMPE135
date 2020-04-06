@@ -13,6 +13,9 @@ public:
     explicit HardComputer(int playerNum);
     ~HardComputer() override;
 
+    ComputerDifficulty::Difficulty getDifficulty() override;
+
+    PlayerChoice::Choice getPrediction();
     PlayerChoice::Choice getPlayerChoice() override;
     void notifyPlayer(GameResult result) override;
 

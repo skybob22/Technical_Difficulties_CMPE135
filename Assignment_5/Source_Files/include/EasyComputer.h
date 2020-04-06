@@ -8,6 +8,8 @@ public:
     explicit EasyComputer(int playerNum);
     ~EasyComputer() override;
 
+    ComputerDifficulty::Difficulty getDifficulty() override;
+
     PlayerChoice::Choice getPlayerChoice() override;
 
 private:

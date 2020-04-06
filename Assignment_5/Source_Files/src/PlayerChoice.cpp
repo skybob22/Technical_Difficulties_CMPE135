@@ -4,23 +4,26 @@
 //Define the matchups for what wins against what
 //Format {Choice,{Everything choice beats}}
 const std::unordered_map<PlayerChoice::Choice,std::unordered_set<PlayerChoice::Choice>> PlayerChoice::MATCHUP_MAP = {
-        {Rock,{Scissors}},
-        {Paper,{Rock}},
-        {Scissors,{Paper}}
+        {Rock,{Scissors,None}},
+        {Paper,{Rock,None}},
+        {Scissors,{Paper,None}},
+        {None,{}}
 };
 
 //Define a map that is used to convert an enum into a string (since c++ can't to it automatically)
 const std::unordered_map<PlayerChoice::Choice,std::string> PlayerChoice::CHOICE_TO_STRING_MAP = {
         {Rock,"Rock"},
         {Paper,"Paper"},
-        {Scissors,"Scissors"}
+        {Scissors,"Scissors"},
+        {None,"None"}
 };
 
 //Define a map that is used to convert a string into an enum
 const std::unordered_map<std::string,PlayerChoice::Choice> PlayerChoice::STRING_TO_CHOICE_MAP = {
         {"rock",Rock},{"r",Rock},
         {"paper",Paper},{"p",Paper},
-        {"scissors",Scissors},{"s",Scissors}
+        {"scissors",Scissors},{"s",Scissors},
+        {"none",None},{"n",None}
 };
 
 /**

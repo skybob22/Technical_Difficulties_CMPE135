@@ -1,33 +1,17 @@
 #include <stdexcept>
 #include "Game.h"
-#include <iostream>
 
 /**
  * @brief Creates a game object based on the type of gamemode you wish to play
  * @param mode The gamemode e.g PVP (Player vs Player), PVE (Player vs Computer), EVE (Computer vs Computer)
  */
-Game::Game(GameMode mode):players(2, nullptr){
+Game::Game(ComputerDifficulty::Difficulty diff):players(2, nullptr){
     //Currently only configured for 2-player, if that changes this will need to be changed
-    switch(mode){
-        case GameMode::PVP:{
-            players[0] = Player::createPlayer(Player::PlayerType::Human,1);
-            players[1] = Player::createPlayer(Player::PlayerType::Human,2);
-            break;
-        }
-        case GameMode::PVE:{
-            players[0] = Player::createPlayer(Player::PlayerType::Human,1);
-            players[1] = Player::createPlayer(Player::PlayerType::Computer,2);
-            break;
-        }
-        case GameMode::EVE:{
-            players[0] = Player::createPlayer(Player::PlayerType::Computer,1);
-            players[1] = Player::createPlayer(Player::PlayerType::Computer,2);
-            break;
-        }
-        default:{
-            throw std::invalid_argument("Gamemode must be PVP, PVE or EVE");
-        }
-    }//End switch
+    players[0] = Player::createPlayer(Player::PlayerType::Human,1);
+    players[1] = Player::createPlayer(Player::PlayerType::Computer,2,diff);
+
+    //Initialize result to have correct number of players
+    result.playerChoices.resize(players.size());
 }
 
 /**
@@ -39,6 +23,15 @@ Game::~Game(){
         delete players[i];
         players[i] = nullptr;
     }
+}
+
+void Game::setPlayerType(unsigned int playerNumber, Player::PlayerType type, ComputerDifficulty::Difficulty diff){
+    if(playerNumber-1 > players.size()){
+        throw std::length_error("Invalid player number");
+    }
+
+    delete players[playerNumber-1];
+    players[playerNumber-1] = Player::createPlayer(type,playerNumber,diff);
 }
 
 /**

@@ -1,12 +1,13 @@
 #include <algorithm>
-#include <iostream>
 #include "GameManager.h"
+
+const unsigned int GameManager::DEFAULT_NUM_PLAYERS = 2;
 
 /**
  * @brief Constructs a GameManager object with the default number of rounds set to 20
  */
-GameManager::GameManager():game(nullptr),matchHistory(0),numRounds(20),gameStarted(false){
-
+GameManager::GameManager():game(nullptr),matchHistory(0),numRounds(20){
+    currentRound = 0;
 }
 
 /**
@@ -25,47 +26,120 @@ void GameManager::setNumRounds(unsigned int numberOfRounds){
     this->numRounds = numberOfRounds;
 }
 
+/**
+ * @brief Gets the total number of rounds to be played
+ * @return Total number of rounds
+ */
 unsigned int GameManager::getNumRounds(){
     return numRounds;
 }
 
+/**
+ * @brief Gets the current round being played (the round that will be played on next button press)
+ * @return The current round
+ */
 unsigned int GameManager::getRound(){
     //TODO: Temporary return value, update to reflect actual game status
-    if(!gameStarted){
-        return 0;
-    }
-
-    return 1;
+    return currentRound;
 }
 
 /**
  * @brief Starts the game and plays the previously set number of rounds
  * @param gameMode The type of gamemode to be use e.g PVP, PVE, or EVE
  */
-void GameManager::startGame(Game::GameMode gameMode){
+void GameManager::startGame(ComputerDifficulty::Difficulty diff) {
+    if(game != nullptr){
+        //If a previous game was in progress, stop it
+        delete game;
+        game = nullptr;
+    }
+
     //Create a new game object with the correct game mode
-    game = new Game(gameMode);
-    gameStarted = true;
+    game = new Game(diff);
+    currentRound = 1;
 
     //Clear match history for new round of games, and allocate size for needed number of rounds
     matchHistory.clear();
     matchHistory.reserve(numRounds);
-
-    //Loop through, playing however many rounds were requested
-    for(unsigned int i=0;i<numRounds;i++){
-        std::cout << std::endl << "Round " << i+1 << std::endl;
-        game->playGame();
-        matchHistory.push_back(game->getResult());
-
-        //Print out result of game
-        std::cout << std::endl << game->getResult() << std::endl;
-    }
-    delete game;
-    game = nullptr;
 }
 
+void GameManager::playRound(){
+    if( currentRound <= numRounds && game != nullptr){
+        game->playGame();
+        matchHistory.push_back(game->getResult());
+        currentRound++;
+    }
+
+    if(currentRound > numRounds){
+        currentRound = 0;
+        endGame();
+    }
+}
+
+/**
+ * @brief Stops the current game
+ */
 void GameManager::endGame(){
-    gameStarted = false;
+    delete game;
+    game = nullptr;
+
+    currentRound = 0;
+}
+
+/**
+ * @brief Checks if there is currently an ongoing game or not
+ * @return Whether there is an ongoing game
+ */
+bool GameManager::isGameInProgress(){
+    return game != nullptr;
+}
+
+/**
+ * @brief Gets the number of wins for each player
+ * @return A vector with the number of wins for each player, playerNumber-1 = index
+ */
+std::vector<unsigned int> GameManager::getNumWins(){
+    //Get number of players
+    const unsigned int numPlayers = (game != nullptr)?game->getResult().playerChoices.size():DEFAULT_NUM_PLAYERS;
+    if(matchHistory.size() == 0){
+        //No games played
+        return std::vector<unsigned int>(numPlayers+1,0);
+    }
+
+    //Look through the match history and total up how many wins each player has
+    std::vector<unsigned int> numWins(numPlayers+1,0);
+    for(GameResult result : matchHistory){
+        numWins[result.winner]++;
+    }
+    return numWins;
+}
+
+/**
+ * @brief Gets the number of the player who won the last match
+ * @return The player number of the winner, 0 if tied
+ */
+unsigned int GameManager::getWinner(){
+    std::vector<unsigned int> numWins = getNumWins();
+    const unsigned int numPlayers = numWins.size()-1;
+
+    //Find the player with the most wins while simultaneously checking for ties
+    std::vector<unsigned int> maxIndex = {1};
+    for(unsigned int i=2;i<numPlayers+1;i++){
+        if (numWins[i] > numWins[maxIndex[0]]){
+            maxIndex = {i};
+        }
+        else if(numWins[i] == numWins[maxIndex[0]]){
+            maxIndex.push_back(i);
+        }
+    }
+
+    if(maxIndex.size() > 1){
+        //Players Tied
+        return 0;
+    }
+    else{
+        return maxIndex[0];
+    }
 }
 
 /**
@@ -74,52 +148,4 @@ void GameManager::endGame(){
  */
 std::vector<GameResult> GameManager::getMatchHistory() const{
     return matchHistory;
-}
-
- /**
-  * @brief Prints the current results to an ostream
-  * @param stream An ostream object
-  * @param gameManager A game manager (preferably that has already run some games)
-  * @return A reference to the ostream object
-  */
-std::ostream& operator<<(std::ostream& stream,const GameManager& gameManager){
-    if(gameManager.matchHistory.size() == 0){
-        stream << "No Games Played" << std::endl;
-        return stream;
-    }
-
-    //Look through the match history and total up how many wins each player has
-    const unsigned int numPlayers = gameManager.matchHistory[0].playerChoices.size();
-    std::vector<unsigned int> numWins(numPlayers,0);
-    for(GameResult result : gameManager.matchHistory){
-        if(result.winner != 0){
-            numWins[result.winner-1]++;
-        }
-    }
-
-     //Find the player with the most wins while simultaneously checking for ties
-     std::vector<unsigned int> maxIndex = {0};
-     for(unsigned int i=1;i<numPlayers;i++){
-         if (numWins[i] > numWins[maxIndex[0]]){
-             maxIndex = {i};
-         }
-         else if(numWins[i] == numWins[maxIndex[0]]){
-             maxIndex.push_back(i);
-         }
-     }
-
-    //Display how many wins each player has won
-    stream << gameManager.matchHistory.size() << " games played" << std::endl;
-    for(unsigned int i=0;i<numPlayers;i++){
-        stream << "Player " << i+1 << ": " << numWins[i] << " Wins" << std::endl;
-    }
-
-    if(maxIndex.size() > 1){
-        stream << "Players Tied";
-    }
-    else {
-        stream << "Player " << maxIndex[0]+1 << " Wins!";
-    }
-
-    return stream;
 }

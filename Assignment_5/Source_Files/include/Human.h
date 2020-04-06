@@ -8,7 +8,11 @@ public:
     explicit Human(int playerNumber);
     ~Human() override;
 
+    void setPlayerChoice(PlayerChoice::Choice choice);
     PlayerChoice::Choice getPlayerChoice() override;
+
+private:
+    PlayerChoice::Choice humanChoice;
 };
 
 #endif

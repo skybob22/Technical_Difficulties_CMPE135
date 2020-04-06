@@ -1,5 +1,4 @@
 #include <stdexcept>
-#include <iostream>
 #include <algorithm>
 #include "Player.h"
 #include "Human.h"
@@ -53,26 +52,13 @@ void Player::notifyPlayer(const GameResult result){
  * @param playerNumber The number of the player e.g 1 or 2
  * @return A pointer to a player object of the appropriate type
  */
-Player* Player::createPlayer(PlayerType type, int playerNumber){
+Player* Player::createPlayer(PlayerType type, int playerNumber,ComputerDifficulty::Difficulty diff){
     switch(type){
         case PlayerType::Human:{
             return new class Human(playerNumber);
         }
         case PlayerType::Computer:{
-            std::cout << "Choose Difficulty: 'Easy' (random), or 'Hard' (Machine Learning " << std::endl;
-            while(true){
-                std::cout << "Difficulty:";
-                std::string diffStr;
-                std::getline(std::cin, diffStr);
-
-                try{
-                    Computer::Difficulty diff = Computer::stringToDiff(diffStr);
-                    return Computer::createComputer(diff,playerNumber);
-                }
-                catch(std::invalid_argument& e){
-                    std::cout << "Invalid option, please try again" << std::endl;
-                }
-            }
+            return dynamic_cast<Player*>(Computer::createComputer(diff,playerNumber));
         }
         default:{
             throw std::invalid_argument("Player must be either Human or Computer");

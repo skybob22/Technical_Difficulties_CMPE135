@@ -2,27 +2,18 @@
 #define COMPUTER_H
 
 #include "Player.h"
+#include "Difficulty.h"
 
 class Computer : public Player{
 public:
     explicit Computer(int playerNumber);
     ~Computer() override;
 
-    enum Difficulty{
-        Easy,
-        Hard
-    };
-    static Computer* createComputer(Difficulty diff,int playerNum);
-
-    static std::string diffToString(Difficulty val);
-    static Difficulty stringToDiff(std::string val);
+    static Computer* createComputer(ComputerDifficulty::Difficulty diff,int playerNum);
+    virtual ComputerDifficulty::Difficulty getDifficulty() = 0;
 
 protected:
     static PlayerChoice::Choice getRandomChoice(); //Used by multiple sub-classes
-
-private:
-    static const std::unordered_map<Difficulty,std::string> DIFF_TO_STRING_MAP;
-    static const std::unordered_map<std::string,Difficulty> STRING_TO_DIFF_MAP;
 };
 
 #endif

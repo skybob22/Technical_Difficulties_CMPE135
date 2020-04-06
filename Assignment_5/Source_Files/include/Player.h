@@ -3,7 +3,7 @@
 
 #include "PlayerChoice.h"
 #include "GameResult.h"
-#include "GameResult.h"
+#include "Difficulty.h"
 
 class Player{
 public:
@@ -17,7 +17,7 @@ public:
         Human,
         Computer
     };
-    static Player* createPlayer(PlayerType type,int playerNumber);
+    static Player* createPlayer(PlayerType type,int playerNumber,ComputerDifficulty::Difficulty diff = ComputerDifficulty::Difficulty::Hard);
 
     static std::string typeToString(PlayerType val);
     static PlayerType stringToType(std::string val);

@@ -10,7 +10,8 @@ public:
     enum Choice{
         Rock,
         Paper,
-        Scissors
+        Scissors,
+        None
     };
 
     static int evaluateMatchup(Choice p1,Choice p2);

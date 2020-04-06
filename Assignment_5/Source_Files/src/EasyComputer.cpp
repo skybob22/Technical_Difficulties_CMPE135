@@ -14,6 +14,14 @@ EasyComputer::EasyComputer(int playerNum):Computer(playerNum){
 EasyComputer::~EasyComputer() = default;
 
 /**
+ * @brief Gets the computer difficulty
+ * @return The difficulty setting of the computer
+ */
+ComputerDifficulty::Difficulty EasyComputer::getDifficulty(){
+    return ComputerDifficulty::Difficulty::Easy;
+}
+
+/**
  * @brief Gets the choice (easy difficulty)
  * @return The choice (Rock,Paper,Scissors...)
  */
