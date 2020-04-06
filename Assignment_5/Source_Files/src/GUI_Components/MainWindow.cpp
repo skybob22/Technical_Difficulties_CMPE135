@@ -50,7 +50,7 @@ void MainWindow::OnInit(){
     //roundLabel->SetFont(boldFont);
 
 
-    currentRound = new wxStaticText(roundPanel,wxID_ANY,"0 / 0");
+    currentRound = new wxStaticText(roundPanel,wxID_ANY,"0 / 20");
     roundPanelSizer->Add(roundLabel,1);
     roundPanelSizer->Add(currentRound,1);
     roundPanel->SetSizer(roundPanelSizer);
@@ -210,6 +210,7 @@ void MainWindow::InitMenu(){
     menuBar->Append(gameMenu,"Game");
     menuBar->Append(helpMenu,"Help");
     SetMenuBar(menuBar);
+    gameManager->setNumRounds(20);
 }
 
 void MainWindow::UpdateRound(){
@@ -249,6 +250,7 @@ void MainWindow::OnButtonClicked(wxCommandEvent& evt){
         GameResult result = gameManager->getMatchHistory().back();
         computerChoice->SetLabelText(PlayerChoice::toString(result.playerChoices[1]));
         winner->SetLabelText((result.winner == 0) ? "Tie" : (result.winner == 1) ? "Human" : "Computer");
+
 
         //Update Statistics
         UpdateStatistics();
