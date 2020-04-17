@@ -17,10 +17,10 @@ CODE_DIR := $(ROOT_DIR)/Source_Files
 
 #Directories with application code
 APP_INC_DIR := $(CODE_DIR)/include
-CHESS_PIECE_INC_DIR := $(APP_INC_DIR)/Chess_Pieces
+MOVEMENT_INC_DIR := $(APP_INC_DIR)/Movement_Checking
 GUI_INC_DIR := $(APP_INC_DIR)/GUI_Components
 APP_SRC_DIR := $(CODE_DIR)/src
-CHESS_PIECE_SRC_DIR := $(APP_SRC_DIR)/Chess_Pieces
+MOVEMENT_SRC_DIR := $(APP_SRC_DIR)/Movement_Checking
 GUI_SRC_DIR := $(APP_SRC_DIR)/GUI_Components
 
 #Directories with unit testing code
@@ -36,5 +36,5 @@ TEST_MAIN := $(GTEST_SRC_DIR)/gtest_main.cpp
 
 
 #All directories that need to be compiled here
-ALL_SRC_DIR_APP := $(APP_SRC_DIR) $(APP_INC_DIR) $(CHESS_PIECE_INC_DIR) $(CHESS_PIECE_SRC_DIR) $(GUI_SRC_DIR) $(GUI_INC_DIR)
+ALL_SRC_DIR_APP := $(APP_SRC_DIR) $(APP_INC_DIR) $(MOVEMENT_INC_DIR) $(MOVEMENT_SRC_DIR) $(GUI_SRC_DIR) $(GUI_INC_DIR)
 ALL_SRC_DIR_TEST := $(TEST_DIR) $(GTEST_DIR) $(GTEST_SRC_DIR) $(GTEST_INC_DIR)

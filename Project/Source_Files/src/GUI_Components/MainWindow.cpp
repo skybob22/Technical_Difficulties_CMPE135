@@ -70,6 +70,10 @@ void MainWindow::InitMenu(){
     SetMenuBar(menuBar);
 }
 
+/**
+ * @brief Called when the window is resized
+ * @param evt An event
+ */
 void MainWindow::OnResize(wxSizeEvent &evt){
     //Bitmaps don't auto-resize, have to redraw board when window resized
     if(chessboardGUI != nullptr){
@@ -78,11 +82,19 @@ void MainWindow::OnResize(wxSizeEvent &evt){
     evt.Skip();
 }
 
+/**
+ * @brief Called when the user clicks on exit, quits the program
+ * @param evt An event
+ */
 void MainWindow::OnExit(wxCommandEvent& evt){
     Close(true);
     evt.Skip();
 }
 
+/**
+ * @brief Called when the user clicks new game, starts a new game
+ * @param evt An event
+ */
 void MainWindow::OnStartGame(wxCommandEvent& evt){
     if(chessboardGUI != nullptr){
         chessboardGUI->ResetBoard();
@@ -90,10 +102,18 @@ void MainWindow::OnStartGame(wxCommandEvent& evt){
     evt.Skip();
 }
 
+/**
+ * @brief Called when the user clicks undo, undoes the last move
+ * @param evt An event
+ */
 void MainWindow::OnUndoMove(wxCommandEvent& evt){
     evt.Skip();
 }
 
+/**
+ * @brief Called when the user selects a color for the board, changes the current color
+ * @param evt An event
+ */
 void MainWindow::OnSetColor(wxCommandEvent& evt){
     //Figure out which color is selected
     wxColor newWhiteColor;
@@ -103,6 +123,6 @@ void MainWindow::OnSetColor(wxCommandEvent& evt){
     else if (menuBar->FindItem(CHESS_BOARD_RED)->IsChecked()){
         newWhiteColor = wxColor(0x0000CC);
     }
-    chessboardGUI->setColor(ChessboardGUI::White,newWhiteColor);
+    chessboardGUI->setColor(ChessColor::White,newWhiteColor);
     evt.Skip();
 }
