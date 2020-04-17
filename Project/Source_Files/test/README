@@ -1,0 +1,10 @@
+New test suites and test files should be added to this directory
+
+#==============================Adding New Tests==============================#
+Create a file '[Class_To_Test]Tests.cpp' for clarity
+At the top of each file, add the following include and any other necessary:
+  > #include "gtest/gtest.h"
+
+Look up information on how to create test cases using gtest [I may add instructions later]
+
+This README file can be removed in assignments copied from this template once at least one file is placed in this directory
