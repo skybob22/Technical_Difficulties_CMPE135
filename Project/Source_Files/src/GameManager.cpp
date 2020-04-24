@@ -89,6 +89,12 @@ GameManager::~GameManager(){
  * @brief Sets the board to the default starting state and starts a new game
  */
 void GameManager::newGame(){
+    while(!moveHistory.empty()){
+        ChessMove move = moveHistory.top();
+        moveHistory.pop();
+        delete move.pieceTaken; //Piece is not in normal pieces list, so must delete it here
+    }
+
     whitePieces.clear();
     for(PieceInfo piece : DEFAULT_WHITE_PIECES){
         whitePieces.insert(new ChessPiece(piece.color,piece.type,piece.pos));
