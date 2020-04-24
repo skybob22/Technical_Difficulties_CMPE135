@@ -9,7 +9,7 @@ public:
     QueenChecker();
     ~QueenChecker() override;
 
-    bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) override;
+    bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const override;
 private:
     std::vector<MovementChecker*> movementCheckers;
 };

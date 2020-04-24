@@ -27,7 +27,7 @@ QueenChecker::~QueenChecker(){
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState){
+bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     //Queen can move like a rook or a bishop, let those checkers do the checking
     for(MovementChecker* checker : movementCheckers){
         if (checker->isMoveValid(current,dest,boardState)){

@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "GameManager.h"
 #include <wx/numdlg.h>
 
 /**
@@ -34,7 +35,9 @@ void MainWindow::OnInit(){
     wxInitAllImageHandlers();
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    chessboardGUI = new ChessboardGUI(this);
+    gameManager = new GameManager();
+
+    chessboardGUI = new ChessboardGUI(this,gameManager);
     sizer->Add(chessboardGUI,1,wxSHAPED | wxALL | wxALIGN_CENTER);
 
     sizer->Layout();
@@ -44,7 +47,7 @@ void MainWindow::OnInit(){
     this->SetMinSize(wxSize(500,500));
 
     //For some reason, sizing isn't right during initialization, try redrawing it
-    chessboardGUI->Redraw();
+    chessboardGUI->update();
 }
 
 /**
@@ -77,7 +80,7 @@ void MainWindow::InitMenu(){
 void MainWindow::OnResize(wxSizeEvent &evt){
     //Bitmaps don't auto-resize, have to redraw board when window resized
     if(chessboardGUI != nullptr){
-        chessboardGUI->Redraw();
+        chessboardGUI->update();
     }
     evt.Skip();
 }
@@ -96,8 +99,8 @@ void MainWindow::OnExit(wxCommandEvent& evt){
  * @param evt An event
  */
 void MainWindow::OnStartGame(wxCommandEvent& evt){
-    if(chessboardGUI != nullptr){
-        chessboardGUI->ResetBoard();
+    if(gameManager != nullptr){
+        gameManager->newGame();
     }
     evt.Skip();
 }

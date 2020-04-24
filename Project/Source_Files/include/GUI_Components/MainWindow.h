@@ -29,6 +29,7 @@ private:
     void OnSetColor(wxCommandEvent& evt);
 
     wxMenuBar* menuBar;
+    GameManager* gameManager;
     ChessboardGUI* chessboardGUI; //Will eventually need check if pawn is at end and open selector for replacement piece
 
 

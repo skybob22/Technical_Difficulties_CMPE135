@@ -17,7 +17,7 @@ PawnChecker::~PawnChecker() = default;
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState){
+bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     //Temporary return value
     return true;
 }

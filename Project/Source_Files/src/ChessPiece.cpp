@@ -66,6 +66,14 @@ ChessPiece::ChessPiece(ChessColor color,PieceType type,BoardCoordinate position)
 }
 
 /**
+ * @brief Copy constructor for chess peice, constructs a ChessPiece by referencing another
+ * @param other
+ */
+ChessPiece::ChessPiece(const ChessPiece& other):position(other.position),color(other.color),type(other.type),sprite(other.sprite){
+    moveChecker = MovementChecker::createMovementChecker(other.type);
+}
+
+/**
  * @brief Destroys a chess piece
  */
 ChessPiece::~ChessPiece(){
@@ -77,7 +85,7 @@ ChessPiece::~ChessPiece(){
  * @brief Gets the color of the chess peice
  * @return The color of the chess piece (White or Black)
  */
-ChessColor ChessPiece::getColor(){
+ChessColor ChessPiece::getColor() const{
     return color;
 }
 
@@ -85,7 +93,7 @@ ChessColor ChessPiece::getColor(){
  * @brief Gets the type of chess piece
  * @return The type of piece (King, Queen, etc.)
  */
-PieceType ChessPiece::getPieceType(){
+PieceType ChessPiece::getPieceType() const{
     return type;
 }
 
@@ -93,7 +101,7 @@ PieceType ChessPiece::getPieceType(){
  * @brief Gets the sprite representing the peice, used for drawing the GUI
  * @return A wxImage with the appropriate sprite
  */
-wxImage ChessPiece::getSprite(){
+wxImage ChessPiece::getSprite() const{
     return sprite;
 }
 
@@ -103,7 +111,7 @@ wxImage ChessPiece::getSprite(){
  * @param boardState The current board state (locations of all the pieces)
  * @return Whether the move is valid or not
  */
-bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<ChessPiece*>>& boardState){
+bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     return moveChecker->isMoveValid(position,pos,boardState);
 }
 
@@ -119,7 +127,7 @@ void ChessPiece::move(BoardCoordinate pos){
  * @brief Gets the number of points a piece is worth
  * @return The point value of the piece
  */
-int ChessPiece::getPointValue(){
+int ChessPiece::getPointValue() const{
     auto pointSearchResult = POINT_VALUE_MAP.find(type);
     if(pointSearchResult != POINT_VALUE_MAP.end()){
         return pointSearchResult->second;
@@ -130,13 +138,9 @@ int ChessPiece::getPointValue(){
 }
 
 /**
- * @brief Factory method for creating chess pieces
- * @param color The color of the piece
- * @param type The type of piece
- * @param position Where the piece is located on the chess board
- * @return A pointer of the appropriate chess piece
+ * @brief Gets the current coordinates of the chess piece
+ * @return The current position of the chess piece
  */
-ChessPiece* ChessPiece::createChessPiece(ChessColor color, PieceType type, BoardCoordinate position){
-    ChessPiece* piece = new ChessPiece(color,type,position);
-    return piece;
+BoardCoordinate ChessPiece::getPosition() const{
+    return position;
 }

@@ -9,7 +9,7 @@ class ChessPiece; //Forward Declaration
 class MovementChecker{
 public:
     virtual ~MovementChecker();
-    virtual bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) = 0;
+    virtual bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const = 0;
 
     static MovementChecker* createMovementChecker(PieceType type);
 protected:

@@ -18,7 +18,7 @@ enum PieceType{
 struct BoardCoordinate{
     unsigned int x;
     unsigned int y;
-    BoardCoordinate(unsigned int x,unsigned int y):x(x),y(y){};
+    BoardCoordinate(unsigned int y,unsigned int x):x(x),y(y){};
 };
 
 #endif
