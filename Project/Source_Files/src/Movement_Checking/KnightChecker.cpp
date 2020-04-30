@@ -19,7 +19,7 @@ KnightChecker::~KnightChecker() = default;
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool KnightChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+bool KnightChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     if(dest == current){
         //Staying put is not a valid 'move'
         return false;
@@ -50,6 +50,6 @@ bool KnightChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,con
  * @param boardState The board state showing where all the pieces are
  * @return A set containing all the valid positions
  */
-std::set<BoardCoordinate> KnightChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+std::set<BoardCoordinate> KnightChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
 
 }

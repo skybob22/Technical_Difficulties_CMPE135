@@ -20,7 +20,7 @@ public:
     //Game interaction
     bool movePiece(BoardCoordinate start,BoardCoordinate dest);
     void undoMove();
-    std::vector<std::vector<const ChessPiece*>> getBoardState() const;
+    std::vector<std::vector<ChessPiece*>> getBoardState() const;
 
     bool isKingInCheck(ChessColor color);
     bool isKingInCheckmate(ChessColor color);
@@ -43,12 +43,17 @@ private:
         BoardCoordinate start;
         BoardCoordinate dest;
         ChessPiece* pieceTaken;
+        ChessMove(BoardCoordinate start,BoardCoordinate dest,ChessPiece* piece):
+            start(start),dest(dest),pieceTaken(piece){};
     };
     std::stack<ChessMove,std::list<ChessMove>> moveHistory;
 
     //Keep track of pieces
     //TODO: Try and figure out better data structure
     std::unordered_set<ChessPiece*> whitePieces,blackPieces;
+    std::vector<std::vector<ChessPiece*>> boardState;
+    ChessPiece* WhiteKing;
+    ChessPiece* BlackKing;
 
     //Subject Functionality
     void updateObservers() override;

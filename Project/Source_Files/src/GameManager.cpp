@@ -65,6 +65,7 @@ unsigned int GameManager::getBoardWidth(){
  * @brief Constructs a new GameManager object
  */
 GameManager::GameManager():gameStarted(false){
+    boardState = std::vector<std::vector<ChessPiece*>>(BOARD_HEIGHT,std::vector<ChessPiece*>(BOARD_WIDTH,nullptr));
     playerTurn = White;
 }
 
@@ -89,13 +90,36 @@ void GameManager::newGame(){
         delete move.pieceTaken; //Piece is not in normal pieces list, so must delete it here
     }
 
+    boardState = std::vector<std::vector<ChessPiece*>>(BOARD_HEIGHT,std::vector<ChessPiece*>(BOARD_WIDTH,nullptr));
+
+    for(auto it=whitePieces.begin();it != whitePieces.end();it++){
+        delete (*it);
+    }
     whitePieces.clear();
     for(PieceInfo piece : DEFAULT_WHITE_PIECES){
-        whitePieces.insert(new ChessPiece(piece.color,piece.type,piece.pos));
+        ChessPiece* pieceToInset = new ChessPiece(piece.color,piece.type,piece.pos);
+        boardState[piece.pos.y][piece.pos.x] = pieceToInset;
+        whitePieces.insert(pieceToInset);
+
+        //Keeps track of the king so we can easily find it for checking check/checkmate
+        if(piece.type == King){
+            WhiteKing = pieceToInset;
+        }
+    }
+
+    for(auto it=blackPieces.begin();it != blackPieces.end();it++){
+        delete (*it);
     }
     blackPieces.clear();
     for(PieceInfo piece : DEFAULT_BLACK_PIECES){
-        blackPieces.insert(new ChessPiece(piece.color,piece.type,piece.pos));
+        ChessPiece* pieceToInset = new ChessPiece(piece.color,piece.type,piece.pos);
+        boardState[piece.pos.y][piece.pos.x] = pieceToInset;
+        blackPieces.insert(pieceToInset);
+
+        //Keeps track of the king so we can easily find it for checking check/checkmate
+        if(piece.type == King){
+            BlackKing = pieceToInset;
+        }
     }
 
     gameStarted = true;
@@ -111,13 +135,34 @@ void GameManager::newGame(){
  * @return Whether the move was successful or not (returns false if invalid move)
  */
 bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
+    if(!MovementChecker::isPositionOnBoard(dest)){
+        return false;
+    }
+
+    ChessPiece* pieceToMove =boardState[start.y][start.x];
+    if( pieceToMove== nullptr){
+        return false;
+    }
+
     //Check if move is valid, if so then perform move
+    //TODO: Figure out how to pass this in.
+    //Copying is expensive, and it will not let me convert vector<vector<ChessPiece*>> to vector<vector<const ChessPiece*>>
+    if(!pieceToMove->isMoveValid(dest,boardState)){
+        return false;
+    }
+
+    //Perform the move
+    moveHistory.push(std::move(ChessMove(start,dest,boardState[dest.y][dest.x])));
+
+    pieceToMove->move(dest);
+    boardState[start.y][start.x] = nullptr;
+    boardState[dest.y][dest.x] = pieceToMove;
 
     //Check if player's king is in check, if so undo move and return false
 
     //Temporary return value
     updateObservers();
-    return false;
+    return true;
 }
 
 /**
@@ -163,17 +208,9 @@ bool GameManager::isKingInCheckmate(ChessColor color){
  * @brief Gets the current state of the board (used for rendering)
  * @return A vector containing pointers representing where on the board pieces are
  */
-std::vector<std::vector<const ChessPiece*>> GameManager::getBoardState() const{
-    //Create board vector
-    auto boardState = std::vector<std::vector<const ChessPiece*>>(BOARD_WIDTH,std::vector<const ChessPiece*>(BOARD_HEIGHT,nullptr));
-
-    for(ChessPiece* piece : whitePieces){
-        boardState[piece->getPosition().y][piece->getPosition().x] = piece;
-    }
-    for(ChessPiece* piece : blackPieces){
-        boardState[piece->getPosition().y][piece->getPosition().x] = piece;
-    }
-
+std::vector<std::vector<ChessPiece*>> GameManager::getBoardState() const{
+    //TODO: Figure out how to return this
+    //Copying is expensive, and it will not let me convert vector<vector<ChessPiece*>> to vector<vector<const ChessPiece*>>
     return boardState;
 }
 

@@ -9,8 +9,8 @@ public:
     QueenChecker();
     ~QueenChecker() override;
 
-    bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const override;
-    std::set<BoardCoordinate> getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const override;
+    bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const override;
+    std::set<BoardCoordinate> getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const override;
 private:
     std::vector<MovementChecker*> movementCheckers;
 };

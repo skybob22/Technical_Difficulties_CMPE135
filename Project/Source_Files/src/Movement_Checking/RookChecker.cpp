@@ -19,7 +19,7 @@ RookChecker::~RookChecker() = default;
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool RookChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+bool RookChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     if(dest == current){
         //Staying put is not a valid 'move'
         return false;
@@ -68,6 +68,6 @@ bool RookChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
     return boardState[dest.y][dest.x] == nullptr || (boardState[dest.y][dest.x]->getColor() != myColor);
 }
 
-std::set<BoardCoordinate> RookChecker::getValidMoves(BoardCoordinate current,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+std::set<BoardCoordinate> RookChecker::getValidMoves(BoardCoordinate current,const std::vector<std::vector<ChessPiece*>>& boardState) const{
 
 }

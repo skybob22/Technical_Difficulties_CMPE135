@@ -66,7 +66,7 @@ ChessPiece::ChessPiece(ChessColor color,PieceType type,BoardCoordinate position)
 }
 
 /**
- * @brief Copy constructor for chess peice, constructs a ChessPiece by referencing another
+ * @brief Copy constructor for chess piece, constructs a ChessPiece by referencing another
  * @param other
  */
 ChessPiece::ChessPiece(const ChessPiece& other):position(other.position),color(other.color),type(other.type),sprite(other.sprite){
@@ -111,7 +111,7 @@ wxImage ChessPiece::getSprite() const{
  * @param boardState The current board state (locations of all the pieces)
  * @return Whether the move is valid or not
  */
-bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     return moveChecker->isMoveValid(position,pos,boardState);
 }
 

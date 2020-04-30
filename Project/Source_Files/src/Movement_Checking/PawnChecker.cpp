@@ -42,7 +42,7 @@ PawnChecker::~PawnChecker() = default;
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     if(dest == current){
         //Staying put is not a valid 'move'
         return false;
@@ -85,7 +85,7 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
             }
 
             //Cannot move sideways if there is not a piece of the other color to take
-            return (boardState[dest.y][dest.x]->getColor() != myColor);
+            return (boardState[dest.y][dest.x] != nullptr && boardState[dest.y][dest.x]->getColor() != myColor);
         }
 
         //Pawn is moving 1 forward
@@ -118,7 +118,7 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
             }
 
             //Cannot move sideways if there is not a piece of the other color to take
-            return (boardState[dest.y][dest.x]->getColor() != myColor);
+            return (boardState[dest.y][dest.x] != nullptr && boardState[dest.y][dest.x]->getColor() != myColor);
         }
 
         //Pawn is moving 1 forward
@@ -132,6 +132,6 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
  * @param boardState The board state showing where all the pieces are
  * @return A set containing all the valid positions
  */
-std::set<BoardCoordinate> PawnChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+std::set<BoardCoordinate> PawnChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
 
 }

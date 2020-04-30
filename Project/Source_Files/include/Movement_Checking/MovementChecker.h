@@ -11,8 +11,8 @@ class MovementChecker{
 public:
     virtual ~MovementChecker();
 
-    virtual bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const = 0;
-    virtual std::set<BoardCoordinate> getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const = 0;
+    virtual bool isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const = 0;
+    virtual std::set<BoardCoordinate> getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const = 0;
 
     static bool isPositionOnBoard(BoardCoordinate pos);
 

@@ -19,7 +19,7 @@ KingChecker::~KingChecker() = default;
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool KingChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+bool KingChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     if(dest == current){
         //Staying put is not a valid 'move'
         return false;
@@ -50,6 +50,6 @@ bool KingChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
  * @param boardState The board state showing where all the pieces are
  * @return A set containing all the valid positions
  */
-std::set<BoardCoordinate> KingChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+std::set<BoardCoordinate> KingChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
 
 }

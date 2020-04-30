@@ -7,8 +7,8 @@
 QueenChecker::QueenChecker(){
     movementCheckers.reserve(2);
     //Add both rook and bishop to the list of movement checkers used
-    movementCheckers.push_back(MovementChecker::createMovementChecker(Rook));
-    movementCheckers.push_back(MovementChecker::createMovementChecker(Bishop));
+    movementCheckers.push_back(std::move(MovementChecker::createMovementChecker(Rook)));
+    movementCheckers.push_back(std::move(MovementChecker::createMovementChecker(Bishop)));
 }
 
 /**
@@ -28,7 +28,7 @@ QueenChecker::~QueenChecker(){
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     //Queen can move like a rook or a bishop, let those checkers do the checking
     for(MovementChecker* checker : movementCheckers){
         if (checker->isMoveValid(current,dest,boardState)){
@@ -45,6 +45,6 @@ bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,cons
  * @param boardState The board state showing where all the pieces are
  * @return A set containing all the valid positions
  */
-std::set<BoardCoordinate> QueenChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+std::set<BoardCoordinate> QueenChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
 
 }

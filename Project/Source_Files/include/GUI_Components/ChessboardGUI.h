@@ -19,10 +19,13 @@ public:
 private:
     void OnInit();
 
+    void ButtonClicked(wxCommandEvent& evt);
+
     GameManager* gameManager;
     wxColor whiteColor,blackColor;
+    BoardCoordinate selectedSquare;
 
-    std::vector<std::vector<wxButton*>> boardSquares;
+    std::vector<std::vector<wxBitmapButton*>> boardSquares;
 };
 
 #endif
