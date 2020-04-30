@@ -57,6 +57,7 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
 
     int dx = dest.x - current.x;
     int dy = dest.y - current.y;
+
     if(myColor == White){
         //White Piece
         if(!(dy >= -2 && dy < 0) || abs(dx) > 1){
@@ -86,6 +87,9 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
             //Cannot move sideways if there is not a piece of the other color to take
             return (boardState[dest.y][dest.x]->getColor() != myColor);
         }
+
+        //Pawn is moving 1 forward
+        return boardState[dest.y][dest.x] == nullptr;
     }
     else{
         //Black Piece
@@ -116,6 +120,9 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
             //Cannot move sideways if there is not a piece of the other color to take
             return (boardState[dest.y][dest.x]->getColor() != myColor);
         }
+
+        //Pawn is moving 1 forward
+        return boardState[dest.y][dest.x] == nullptr;
     }
 }
 
