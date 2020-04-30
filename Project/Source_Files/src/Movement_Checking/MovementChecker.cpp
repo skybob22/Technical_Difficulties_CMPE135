@@ -1,3 +1,4 @@
+#include "GameManager.h"
 #include "MovementChecker.h"
 #include "BishopChecker.h"
 #include "KingChecker.h"
@@ -15,6 +16,15 @@ MovementChecker::MovementChecker() = default;
  * @brief Destroys a MovementChecker object
  */
 MovementChecker::~MovementChecker() = default;
+
+/**
+ * @brief Checks to see if a position is on the board or not
+ * @param pos The desired coordinates
+ * @return Whether the position is on the board or not
+ */
+bool MovementChecker::isPositionOnBoard(BoardCoordinate pos){
+    return (pos.x >= 0 && pos.x < static_cast<int>(GameManager::getBoardWidth())) && (pos.y >=0 && pos.y < static_cast<int>(GameManager::getBoardHeight()));
+}
 
 /**
  * @brief A factory method for creating different MovementCheckers for different kinds of pieces

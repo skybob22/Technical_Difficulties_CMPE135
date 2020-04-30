@@ -69,12 +69,6 @@ GameManager::GameManager():gameStarted(false){
 }
 
 /**
- * @brief Copy constructor for GameManager, DONT USE
- * @param other GameManager to make a copy of
- */
-GameManager::GameManager(const GameManager& other) =  default;
-
-/**
  * @brief Destroys a GameManager object
  */
 GameManager::~GameManager(){
@@ -131,10 +125,17 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
  */
 void GameManager::undoMove(){
     if(!moveHistory.empty()) {
-        //Revert board state to previous state
+        if(moveHistory.top().start == moveHistory.top().dest){
+            //Special case when pawn reaches end and is promoted, need to undo last 2 moves
 
-        moveHistory.pop();
-        updateObservers();
+
+        }
+        else {
+            //Revert board state to previous state
+
+            moveHistory.pop();
+            updateObservers();
+        }
     }
 }
 

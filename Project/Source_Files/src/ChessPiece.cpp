@@ -111,7 +111,7 @@ wxImage ChessPiece::getSprite() const{
  * @param boardState The current board state (locations of all the pieces)
  * @return Whether the move is valid or not
  */
-bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<ChessPiece*>>& boardState) const{
+bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
     return moveChecker->isMoveValid(position,pos,boardState);
 }
 

@@ -16,9 +16,16 @@ enum PieceType{
 };
 
 struct BoardCoordinate{
-    unsigned int x;
-    unsigned int y;
+    int x;
+    int y;
     BoardCoordinate(unsigned int y,unsigned int x):x(x),y(y){};
+
+    bool operator == (const BoardCoordinate& rhs) const{
+        return x == rhs.x && y == rhs.y;
+    }
+    bool operator < (const BoardCoordinate& rhs) const{
+        return (x + 8*y) < (rhs.x + 8*rhs.y);
+    }
 };
 
 #endif

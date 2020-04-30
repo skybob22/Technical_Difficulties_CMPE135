@@ -14,7 +14,7 @@ public:
     ~ChessPiece();
 
     //TODO: Do we want to have each piece have a pointer to the board state or pass it it when checking moves?
-    bool isMoveValid(BoardCoordinate pos,const std::vector<std::vector<ChessPiece*>>& boardState) const;
+    bool isMoveValid(BoardCoordinate pos,const std::vector<std::vector<const ChessPiece*>>& boardState) const;
     void move(BoardCoordinate pos); //TODO: Check if position is valid when moving, need to somehow get reference to board state
 
     int getPointValue() const;

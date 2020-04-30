@@ -1,4 +1,5 @@
 #include "QueenChecker.h"
+#include "ChessPiece.h"
 
 /**
  * @brief Creates a QueenChecker object
@@ -27,7 +28,7 @@ QueenChecker::~QueenChecker(){
  * @param boardState The current state of the board and location of other pieces
  * @return Whether or not the move is valid
  */
-bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<ChessPiece*>>& boardState) const{
+bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const std::vector<std::vector<const ChessPiece*>>& boardState) const{
     //Queen can move like a rook or a bishop, let those checkers do the checking
     for(MovementChecker* checker : movementCheckers){
         if (checker->isMoveValid(current,dest,boardState)){
@@ -36,4 +37,14 @@ bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,cons
     }
     //If neither rook or bishop found the move was valid, it's probably invalid
     return false;
+}
+
+/**
+ * @brief Gets a list of all the places the piece can move
+ * @param current The current position of the piece
+ * @param boardState The board state showing where all the pieces are
+ * @return A set containing all the valid positions
+ */
+std::set<BoardCoordinate> QueenChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<const ChessPiece*>>& boardState) const{
+
 }

@@ -13,6 +13,7 @@ class GameManager : public Subject{
 public:
     GameManager();
     ~GameManager();
+    GameManager(const GameManager& other) = delete;
 
     void newGame();
 
@@ -20,6 +21,9 @@ public:
     bool movePiece(BoardCoordinate start,BoardCoordinate dest);
     void undoMove();
     std::vector<std::vector<const ChessPiece*>> getBoardState() const;
+
+    bool isKingInCheck(ChessColor color);
+    bool isKingInCheckmate(ChessColor color);
 
     //Subject Functionality
     void registerObserver(Observer* observer) override;
@@ -30,8 +34,6 @@ public:
     static unsigned int getBoardWidth();
 
 private:
-    GameManager(const GameManager& other); //Declared privately to prevent copying
-
     //Player turn
     bool gameStarted;
     ChessColor playerTurn;
@@ -47,8 +49,6 @@ private:
     //Keep track of pieces
     //TODO: Try and figure out better data structure
     std::unordered_set<ChessPiece*> whitePieces,blackPieces;
-    bool isKingInCheck(ChessColor color);
-    bool isKingInCheckmate(ChessColor color);
 
     //Subject Functionality
     void updateObservers() override;
