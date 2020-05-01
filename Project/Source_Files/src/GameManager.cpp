@@ -92,8 +92,8 @@ void GameManager::newGame(){
 
     boardState = std::vector<std::vector<ChessPiece*>>(BOARD_HEIGHT,std::vector<ChessPiece*>(BOARD_WIDTH,nullptr));
 
-    for(auto it=whitePieces.begin();it != whitePieces.end();it++){
-        delete (*it);
+    for(auto it : whitePieces){
+        delete it;
     }
     whitePieces.clear();
     for(PieceInfo piece : DEFAULT_WHITE_PIECES){
@@ -107,8 +107,8 @@ void GameManager::newGame(){
         }
     }
 
-    for(auto it=blackPieces.begin();it != blackPieces.end();it++){
-        delete (*it);
+    for(auto it : blackPieces){
+        delete it;
     }
     blackPieces.clear();
     for(PieceInfo piece : DEFAULT_BLACK_PIECES){
@@ -194,8 +194,26 @@ void GameManager::undoMove(){
  * @return Whether the king is in check or not
  */
 bool GameManager::isKingInCheck(ChessColor color){
-    //Temporary return value
-    return false;
+    if(color == White){
+        for(auto it : blackPieces){
+            if (it->isMoveValid(WhiteKing->getPosition(),boardState)){
+                //If any black piece puts the white king in check, we don't need to continue checking
+                return true;
+            }
+        }
+        //If none of the black pieces puts the white king in check, then king is not in check
+        return false;
+    }
+    else{
+        for(auto it : whitePieces){
+            if (it->isMoveValid(BlackKing->getPosition(),boardState)){
+                //If any black piece puts the black king in check, we don't need to continue checking
+                return true;
+            }
+        }
+        //If none of the white pieces puts the black king in check, then king is not in check
+        return false;
+    }
 }
 
 /**
