@@ -153,10 +153,14 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
 
     //Perform the move
     moveHistory.push(std::move(ChessMove(start,dest,boardState[dest.y][dest.x])));
-
+    if(boardState[dest.y][dest.x] != nullptr){
+        //Try and remove from both, and if it's not present then nothing will happen
+        whitePieces.erase(boardState[dest.y][dest.x]);
+        blackPieces.erase(boardState[dest.y][dest.x]);
+    }
     pieceToMove->move(dest);
-    boardState[start.y][start.x] = nullptr;
     boardState[dest.y][dest.x] = pieceToMove;
+    boardState[start.y][start.x] = nullptr;
 
     //Check if player's king is in check, if so undo move and return false
 
