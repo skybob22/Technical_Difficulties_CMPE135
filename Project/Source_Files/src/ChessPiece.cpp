@@ -77,8 +77,10 @@ ChessPiece::ChessPiece(const ChessPiece& other):position(other.position),color(o
  * @brief Destroys a chess piece
  */
 ChessPiece::~ChessPiece(){
+    sprite.Destroy();
     delete moveChecker;
     moveChecker = nullptr;
+
 }
 
 /**
@@ -98,7 +100,7 @@ PieceType ChessPiece::getPieceType() const{
 }
 
 /**
- * @brief Gets the sprite representing the peice, used for drawing the GUI
+ * @brief Gets the sprite representing the piece, used for drawing the GUI
  * @return A wxImage with the appropriate sprite
  */
 wxImage ChessPiece::getSprite() const{

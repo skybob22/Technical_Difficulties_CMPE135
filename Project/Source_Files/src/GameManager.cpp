@@ -97,13 +97,13 @@ void GameManager::newGame(){
     }
     whitePieces.clear();
     for(PieceInfo piece : DEFAULT_WHITE_PIECES){
-        ChessPiece* pieceToInset = new ChessPiece(piece.color,piece.type,piece.pos);
-        boardState[piece.pos.y][piece.pos.x] = pieceToInset;
-        whitePieces.insert(pieceToInset);
+        ChessPiece* pieceToInsert = new ChessPiece(piece.color,piece.type,piece.pos);
+        boardState[piece.pos.y][piece.pos.x] = pieceToInsert;
+        whitePieces.insert(pieceToInsert);
 
         //Keeps track of the king so we can easily find it for checking check/checkmate
         if(piece.type == King){
-            WhiteKing = pieceToInset;
+            WhiteKing = pieceToInsert;
         }
     }
 
@@ -112,13 +112,13 @@ void GameManager::newGame(){
     }
     blackPieces.clear();
     for(PieceInfo piece : DEFAULT_BLACK_PIECES){
-        ChessPiece* pieceToInset = new ChessPiece(piece.color,piece.type,piece.pos);
-        boardState[piece.pos.y][piece.pos.x] = pieceToInset;
-        blackPieces.insert(pieceToInset);
+        ChessPiece* pieceToInsert = new ChessPiece(piece.color,piece.type,piece.pos);
+        boardState[piece.pos.y][piece.pos.x] = pieceToInsert;
+        blackPieces.insert(pieceToInsert);
 
         //Keeps track of the king so we can easily find it for checking check/checkmate
         if(piece.type == King){
-            BlackKing = pieceToInset;
+            BlackKing = pieceToInsert;
         }
     }
 

@@ -3,14 +3,14 @@
 
 //List of where all the white pawns start. Used to differentiate first move from subsequent ones)
 const std::set<BoardCoordinate> PawnChecker::WHITE_STARTING_POS = {
-        BoardCoordinate(7,0),
-        BoardCoordinate(7,1),
-        BoardCoordinate(7,2),
-        BoardCoordinate(7,3),
-        BoardCoordinate(7,4),
-        BoardCoordinate(7,5),
-        BoardCoordinate(7,6),
-        BoardCoordinate(7,7)
+        BoardCoordinate(6,0),
+        BoardCoordinate(6,1),
+        BoardCoordinate(6,2),
+        BoardCoordinate(6,3),
+        BoardCoordinate(6,4),
+        BoardCoordinate(6,5),
+        BoardCoordinate(6,6),
+        BoardCoordinate(6,7)
 };
 
 //List of where all the black pawns start. Used to differentiate first move from subsequent ones
