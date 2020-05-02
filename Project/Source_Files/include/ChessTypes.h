@@ -11,6 +11,10 @@ enum ChessColor{
 inline std::string toString(ChessColor c){
     return (c == White)?"White":"Black";
 }
+inline ChessColor operator !(ChessColor c){
+    return (c==White)?Black:White;
+}
+
 
 enum PieceType{
     King,
@@ -20,6 +24,7 @@ enum PieceType{
     Rook,
     Pawn
 };
+
 
 struct BoardCoordinate{
     int x;
