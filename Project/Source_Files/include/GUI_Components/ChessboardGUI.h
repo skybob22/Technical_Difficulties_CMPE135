@@ -14,6 +14,7 @@ public:
     ~ChessboardGUI() override;
 
     void setColor(ChessColor type,const wxColor& newColor);
+    void Redraw();
     void update() override;
 
 private:

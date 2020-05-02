@@ -64,7 +64,7 @@ unsigned int GameManager::getBoardWidth(){
 /**
  * @brief Constructs a new GameManager object
  */
-GameManager::GameManager():gameStarted(false){
+GameManager::GameManager():gameStarted(false),silentMode(false){
     boardState = std::vector<std::vector<ChessPiece*>>(BOARD_HEIGHT,std::vector<ChessPiece*>(BOARD_WIDTH,nullptr));
     playerTurn = White;
 }
@@ -124,8 +124,9 @@ void GameManager::newGame(){
 
     gameStarted = true;
     playerTurn = White;
-
-    updateObservers();
+    if(!silentMode) {
+        updateObservers();
+    }
 }
 
 ChessColor GameManager::getPlayerTurn() const{
@@ -178,8 +179,37 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
 
     //Temporary return value
     playerTurn = (playerTurn==White)?Black:White; //Change the turn back to whoever made the last move
-    updateObservers();
+    if(!silentMode) {
+        updateObservers();
+    }
     return true;
+}
+
+/**
+ * @brief Forcibly moves a piece without checking if the move is valid or not
+ * @param start Where the piece is moving from
+ * @param dest Where the piece is moving to
+ */
+void GameManager::forceMove(BoardCoordinate start,BoardCoordinate dest){
+    //Perform the move
+    ChessPiece* pieceToMove = boardState[start.y][start.x];
+    if(pieceToMove == nullptr){
+        //Only validity check in function. If piece is nullptr, nothing to move
+        return;
+    }
+    moveHistory.push(std::move(ChessMove(start,dest,boardState[dest.y][dest.x])));
+    if(boardState[dest.y][dest.x] != nullptr){
+        //Try and remove from both, and if it's not present then nothing will happen
+        whitePieces.erase(boardState[dest.y][dest.x]);
+        blackPieces.erase(boardState[dest.y][dest.x]);
+    }
+    pieceToMove->move(dest);
+    boardState[dest.y][dest.x] = pieceToMove;
+    boardState[start.y][start.x] = nullptr;
+
+    if(!silentMode) {
+        updateObservers();
+    }
 }
 
 /**
@@ -217,7 +247,9 @@ void GameManager::undoMove(){
         }
 
         moveHistory.pop();
-        updateObservers();
+        if(!silentMode) {
+            updateObservers();
+        }
     }
 }
 
@@ -227,6 +259,11 @@ void GameManager::undoMove(){
  * @return Whether the king is in check or not
  */
 bool GameManager::isKingInCheck(ChessColor color) const{
+    if(!gameStarted){
+        //Cannot have check/checkmate if no game running
+        return false;
+    }
+
     if(color == White){
         for(auto it : blackPieces){
             if (it->isMoveValid(WhiteKing->getPosition(),boardState)){
@@ -255,8 +292,35 @@ bool GameManager::isKingInCheck(ChessColor color) const{
  * @return Whether the king is in checkmate or not
  */
 bool GameManager::isKingInCheckmate(ChessColor color) const{
-    //Temporary return value
-    return false;
+    /*
+     * Technically speaking, this function is not const as it modifies the internal state,
+     * However it guarantees that it will return the state to the original state before returning, so it is still declared const
+     */
+
+    if(!isKingInCheck(color)){
+        //Checking for checkmate is expensive, don't do it if the king isn't in check
+        return false;
+    }
+
+    const_cast<GameManager*>(this)->silentMode = true;
+    for(auto piece : (color == White?whitePieces:blackPieces)){
+        for(auto spot : piece->getValidMoves(boardState)){
+            //Try every possible valid move for pieces of that color
+            const_cast<GameManager*>(this)->forceMove(piece->getPosition(),spot);
+            if(!isKingInCheck(color)){
+                //If any single move takes the king out of check, then the king is not in checkmate
+                const_cast<GameManager*>(this)->undoMove();
+                const_cast<GameManager*>(this)->silentMode = false;
+                return false;
+            }
+            else{
+                const_cast<GameManager*>(this)->undoMove();
+            }
+        }
+    }
+    //If no possible moves take the king out of check, then it is in fact checkmate
+    const_cast<GameManager*>(this)->silentMode = false;
+    return true;
 }
 
 /**

@@ -46,5 +46,12 @@ bool QueenChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,cons
  * @return A set containing all the valid positions
  */
 std::set<BoardCoordinate> QueenChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
+    std::set<BoardCoordinate> retVal;
 
+    for(MovementChecker* checker : movementCheckers){
+        std::set<BoardCoordinate> temp = checker->getValidMoves(current,boardState);
+        retVal.insert(temp.begin(),temp.end());
+    }
+
+    return retVal;
 }

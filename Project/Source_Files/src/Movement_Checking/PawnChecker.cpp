@@ -53,11 +53,17 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
         return false;
     }
 
+    //Make sure there is a piece at the target location
+    if(boardState[current.y][current.x] == nullptr){
+        return false;
+    }
+
     ChessColor myColor = boardState[current.y][current.x]->getColor();
 
     int dx = dest.x - current.x;
     int dy = dest.y - current.y;
 
+    //TODO: Try and find a way to do this without the if(color) and reduce duplicated code
     if(myColor == White){
         //White Piece
         if(!(dy >= -2 && dy < 0) || abs(dx) > 1){
@@ -134,4 +140,103 @@ bool PawnChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
  */
 std::set<BoardCoordinate> PawnChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
 
+    std::set<BoardCoordinate> retVal;
+
+    //Make sure there is a piece at the target location
+    if(boardState[current.y][current.x] == nullptr){
+        return retVal;
+    }
+
+    ChessColor myColor = boardState[current.y][current.x]->getColor();
+    //TODO: Try and find a way to do this without the if(color) and reduce duplicated code
+    if(myColor == White){
+        //Check forward movement
+        for(int i=-1;i>=(WHITE_STARTING_POS.find(current) != WHITE_STARTING_POS.end()?-2:-1);i--){
+            int atY = current.y + i;
+            int atX = current.x;
+
+            if(boardState[atY][atX] == nullptr){
+                //The square is empty, piece can move there
+                retVal.insert(BoardCoordinate(atY,atX));
+                continue;
+            }
+            else{
+                //Piece is blocking the way. Pawns cannot take forward
+                break;
+            }
+        }
+
+        //Check taking other pieces
+        const std::vector<std::pair<int,int>> possibleDirections = {{-1,1},{-1,-1}};
+        for(auto pos : possibleDirections){
+            int atY = current.y + std::get<0>(pos);
+            int atX = current.x + std::get<1>(pos);
+
+            if(!MovementChecker::isPositionOnBoard(BoardCoordinate(atY,atX))){
+                //Position is not on board
+                continue;
+            }
+
+            if(boardState[atY][atX] == nullptr){
+                //No piece to take, pawn cannot move diagonally
+                continue;
+            }
+
+            if(boardState[atY][atX]->getColor() != boardState[current.y][current.x]->getColor()){
+                //There is a piece of the opposite color to take
+                retVal.insert(BoardCoordinate(atY,atX));
+                continue;
+            }
+            else if(boardState[atY][atX]->getColor() == boardState[current.y][current.x]->getColor()){
+                //Piece of the same color, cannot move there
+                continue;
+            }
+        }
+    }
+    else{
+    //Check forward movement
+        for(int i=1;i>=(BLACK_STARTING_POS.find(current) != BLACK_STARTING_POS.end()?2:1);i++){
+            int atY = current.y + i;
+            int atX = current.x;
+
+            if(boardState[atY][atX] == nullptr){
+                //The square is empty, piece can move there
+                retVal.insert(BoardCoordinate(atY,atX));
+                continue;
+            }
+            else{
+                //Piece is blocking the way. Pawns cannot take forward
+                break;
+            }
+        }
+
+        //Check taking other pieces
+        const std::vector<std::pair<int,int>> possibleDirections = {{1,1},{1,-1}};
+        for(auto pos : possibleDirections){
+            int atY = current.y + std::get<0>(pos);
+            int atX = current.x + std::get<1>(pos);
+
+            if(!MovementChecker::isPositionOnBoard(BoardCoordinate(atY,atX))){
+                //Position is not on board
+                continue;
+            }
+
+            if(boardState[atY][atX] == nullptr){
+                //No piece to take, pawn cannot move diagonally
+                continue;
+            }
+
+            if(boardState[atY][atX]->getColor() != boardState[current.y][current.x]->getColor()){
+                //There is a piece of the opposite color to take
+                retVal.insert(BoardCoordinate(atY,atX));
+                continue;
+            }
+            else if(boardState[atY][atX]->getColor() == boardState[current.y][current.x]->getColor()){
+                //Piece of the same color, cannot move there
+                continue;
+            }
+        }
+    }
+
+    return retVal;
 }

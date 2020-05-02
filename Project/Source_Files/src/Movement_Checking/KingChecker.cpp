@@ -30,6 +30,11 @@ bool KingChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
         return false;
     }
 
+    //Make sure there is a piece at the target location
+    if(boardState[current.y][current.x] == nullptr){
+        return false;
+    }
+
     int dx = dest.x - current.x;
     int dy = dest.y - current.y;
 
@@ -51,5 +56,34 @@ bool KingChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
  * @return A set containing all the valid positions
  */
 std::set<BoardCoordinate> KingChecker::getValidMoves(BoardCoordinate current, const std::vector<std::vector<ChessPiece*>>& boardState) const{
+    const std::vector<std::pair<int,int>> possibleDirections = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+    std::set<BoardCoordinate> retVal;
 
+    for(auto pos : possibleDirections){
+        int atY = current.y + std::get<0>(pos);
+        int atX = current.x + std::get<1>(pos);
+
+        if(!MovementChecker::isPositionOnBoard(BoardCoordinate(atY,atX))){
+            //Square is not on board
+            continue;
+        }
+
+        if(boardState[atY][atX] == nullptr){
+            //The square is empty, piece can move there
+            retVal.insert(BoardCoordinate(atY,atX));
+            continue;
+        }
+
+        if(boardState[atY][atX]->getColor() != boardState[current.y][current.x]->getColor()){
+            //There is a piece of the other color that can be taken
+            retVal.insert(BoardCoordinate(atY,atX));
+            continue;
+        }
+        else if(boardState[atY][atX]->getColor() == boardState[current.y][current.x]->getColor()){
+            //There is a piece of the same color that cannot be taken blocking the way
+            continue;
+        }
+    }
+
+    return retVal;
 }

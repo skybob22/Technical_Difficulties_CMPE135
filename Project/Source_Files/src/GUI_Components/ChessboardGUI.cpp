@@ -65,21 +65,21 @@ void ChessboardGUI::OnInit(){
     gameManager->registerObserver(this);
 
     //Render the board
-    update();
+    Redraw();
 }
 
 void ChessboardGUI::ButtonClicked(wxCommandEvent& evt){
     if(selectedSquare.x < 0){
         selectedSquare.y = evt.GetId()/100;
         selectedSquare.x = evt.GetId()%10;
-        update();
+        Redraw();
         return;
     }
 
     if(selectedSquare.y == evt.GetId()/100 && selectedSquare.x == evt.GetId()%10){
         selectedSquare.x = -1;
         selectedSquare.y = -1;
-        update();
+        Redraw();
         return;
     }
 
@@ -88,19 +88,7 @@ void ChessboardGUI::ButtonClicked(wxCommandEvent& evt){
         selectedSquare.y = -1;
         selectedSquare.x = -1;
     }
-    if(gameManager->isKingInCheck(Black)){
-        wxMessageBox(wxString::Format(
-                "Black king is in check"),"",
-                     wxOK | wxICON_INFORMATION,
-                     this);
-    }
-    if(gameManager->isKingInCheck(White)){
-        wxMessageBox(wxString::Format(
-                "White king is in check"),"",
-                     wxOK | wxICON_INFORMATION,
-                     this);
-    }
-    update();
+    Redraw();
 
 }
 
@@ -118,13 +106,43 @@ void ChessboardGUI::setColor(ChessColor type, const wxColour& newColor){
             blackColor = newColor;
             break;
     }
-    update();
+    Redraw();
 }
 
 /**
  * @brief Redraws the board based on updated conditions
  */
 void ChessboardGUI::update(){
+    //Redraw the board state
+    Redraw();
+
+    //Update information/create windows based on updated information
+    //Update player's turn
+    playerTurn->SetLabelText(wxString(toString(gameManager->getPlayerTurn())));
+
+    //Notify player if king is in check or checkmate
+    if(gameManager->isKingInCheck(White)){
+        if(gameManager->isKingInCheckmate(White)){
+            wxMessageBox(wxString::Format("White king is in checkmate\nGame Over"), "", wxOK, this);
+        }
+        else {
+            wxMessageBox(wxString::Format("White king is in check"), "", wxOK, this);
+        }
+    }
+    if(gameManager->isKingInCheck(Black)){
+        if(gameManager->isKingInCheckmate(Black)){
+            wxMessageBox(wxString::Format("Black king is in checkmate\nGame Over"), "", wxOK, this);
+        }
+        else {
+            wxMessageBox(wxString::Format("Black king is in check"), "", wxOK, this);
+        }
+    }
+}
+
+/**
+ * @brief Redraws the chessboard
+ */
+void ChessboardGUI::Redraw(){
     //Recolor squares and move/resize sprites as needed
     std::vector<std::vector<ChessPiece*>> boardState = gameManager->getBoardState();
 
@@ -149,8 +167,8 @@ void ChessboardGUI::update(){
         }
     }
 
-    if(selectedSquare.y >=0 && selectedSquare.x >= 0){
+    //Highlight selected square
+    if(selectedSquare.y >=0 && selectedSquare.y < static_cast<int>(GameManager::getBoardHeight()) && selectedSquare.x >= 0 && selectedSquare.x < static_cast<int>(GameManager::getBoardWidth())){
         boardSquares[selectedSquare.y][selectedSquare.x]->SetBackgroundColour(wxColor(0x00FF00));
     }
-    playerTurn->SetLabelText(wxString(toString(gameManager->getPlayerTurn())));
 }

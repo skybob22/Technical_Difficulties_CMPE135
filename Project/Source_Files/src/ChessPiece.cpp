@@ -117,6 +117,10 @@ bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<C
     return moveChecker->isMoveValid(position,pos,boardState);
 }
 
+std::set<BoardCoordinate> ChessPiece::getValidMoves(const std::vector<std::vector<ChessPiece *> > &boardState) const{
+    return moveChecker->getValidMoves(position,boardState);
+}
+
 /**
  * @Brief Moves the piece elsewhere on the board and updates it's coordinates
  * @param pos The desired position to move to

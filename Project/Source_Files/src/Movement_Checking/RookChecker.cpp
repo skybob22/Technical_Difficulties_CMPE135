@@ -30,6 +30,11 @@ bool RookChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
         return false;
     }
 
+    //Make sure there is a piece at the target location
+    if(boardState[current.y][current.x] == nullptr){
+        return false;
+    }
+
     int dx = dest.x - current.x;
     int dy = dest.y - current.y;
 
@@ -69,5 +74,36 @@ bool RookChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
 }
 
 std::set<BoardCoordinate> RookChecker::getValidMoves(BoardCoordinate current,const std::vector<std::vector<ChessPiece*>>& boardState) const{
+    const std::vector<std::pair<int,int>> possibleDirections = {{1,0},{-1,0},{0,1},{0,-1}};
+    std::set<BoardCoordinate> retVal;
 
+    for(auto dir : possibleDirections){
+        for(int j=1;;j++){
+            int atY = current.y + j*std::get<0>(dir);
+            int atX = current.x + j*std::get<1>(dir);
+
+            if(!MovementChecker::isPositionOnBoard(BoardCoordinate(atY,atX))){
+                //Position not on board, dont check any further
+                break;
+            }
+
+            if(boardState[atY][atX] == nullptr){
+                //The square is empty, piece can move there
+                retVal.insert(BoardCoordinate(atY,atX));
+                continue;
+            }
+
+            if(boardState[atY][atX]->getColor() != boardState[current.y][current.x]->getColor()){
+                //There is a piece of the other color that can be taken
+                retVal.insert(BoardCoordinate(atY,atX));
+                break;
+            }
+            else if(boardState[atY][atX]->getColor() == boardState[current.y][current.x]->getColor()){
+                //There is a piece of the same color that cannot be taken blocking the way
+                break;
+            }
+        }
+    }
+
+    return retVal;
 }

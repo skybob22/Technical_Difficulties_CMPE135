@@ -47,7 +47,7 @@ void MainWindow::OnInit(){
     this->SetMinSize(wxSize(500,500));
 
     //For some reason, sizing isn't right during initialization, try redrawing it
-    chessboardGUI->update();
+    chessboardGUI->Redraw();
 }
 
 /**
@@ -80,7 +80,7 @@ void MainWindow::InitMenu(){
 void MainWindow::OnResize(wxSizeEvent &evt){
     //Bitmaps don't auto-resize, have to redraw board when window resized
     if(chessboardGUI != nullptr){
-        chessboardGUI->update();
+        chessboardGUI->Redraw();
     }
     evt.Skip();
 }

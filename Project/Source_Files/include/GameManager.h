@@ -48,6 +48,8 @@ private:
             start(start),dest(dest),pieceTaken(piece){};
     };
     std::stack<ChessMove,std::list<ChessMove>> moveHistory;
+    void forceMove(BoardCoordinate start,BoardCoordinate dest);
+    bool silentMode; //Used so functions can be internally called without updating observers
 
     //Keep track of pieces
     //TODO: Try and figure out better data structure
