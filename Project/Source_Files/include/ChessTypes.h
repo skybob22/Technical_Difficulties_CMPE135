@@ -1,10 +1,16 @@
 #ifndef CHESS_ENUMS_H
 #define CHESS_ENUMS_H
 
+#include <string>
+
 enum ChessColor{
     White,
     Black
 };
+
+inline std::string toString(ChessColor c){
+    return (c == White)?"White":"Black";
+}
 
 enum PieceType{
     King,

@@ -128,8 +128,12 @@ void GameManager::newGame(){
     updateObservers();
 }
 
+ChessColor GameManager::getPlayerTurn() const{
+    return playerTurn;
+}
+
 /**
- * @brief Attempts to move a piece, and returns whether the peice was moved
+ * @brief Attempts to move a piece, and returns whether the piece was moved
  * @param start The starting location of the piece
  * @param dest The desired destination of the piece
  * @return Whether the move was successful or not (returns false if invalid move)
@@ -139,8 +143,12 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
         return false;
     }
 
-    ChessPiece* pieceToMove =boardState[start.y][start.x];
-    if( pieceToMove== nullptr){
+    ChessPiece* pieceToMove = boardState[start.y][start.x];
+    if( pieceToMove == nullptr){
+        return false;
+    }
+    else if( pieceToMove->getColor() != playerTurn){
+        //Can only move player's own pieces
         return false;
     }
 
@@ -163,8 +171,13 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
     boardState[start.y][start.x] = nullptr;
 
     //Check if player's king is in check, if so undo move and return false
+    if(isKingInCheck(playerTurn)){
+        undoMove();
+        return false;
+    }
 
     //Temporary return value
+    playerTurn = (playerTurn==White)?Black:White; //Change the turn back to whoever made the last move
     updateObservers();
     return true;
 }
@@ -175,16 +188,36 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
 void GameManager::undoMove(){
     if(!moveHistory.empty()) {
         if(moveHistory.top().start == moveHistory.top().dest){
-            //Special case when pawn reaches end and is promoted, need to undo last 2 moves
-
+            //Special case when pawn reaches end and is promoted, need to undo last 2 moves instead of last 1
+            //TODO: Implement undoing promotion
 
         }
-        else {
-            //Revert board state to previous state
 
-            moveHistory.pop();
-            updateObservers();
+        //Revert board state to previous state
+        ChessMove lastMove = moveHistory.top();
+        ChessPiece* movedPiece = boardState[lastMove.dest.y][lastMove.dest.x];
+
+        //Move piece back to where it was, and put the taken piece (can be nullptr) where the piece moved to
+        if(movedPiece != nullptr){
+            movedPiece->move(lastMove.start);
+            playerTurn = movedPiece->getColor();
         }
+        boardState[lastMove.start.y][lastMove.start.x] = movedPiece; //Move the piece back to where it was before
+        boardState[lastMove.dest.y][lastMove.dest.x] = lastMove.pieceTaken;
+
+        if(lastMove.pieceTaken != nullptr){
+            if(lastMove.pieceTaken->getColor() == White){
+                //Insert into white pieces
+                whitePieces.insert(lastMove.pieceTaken);
+            }
+            else{
+                //Insert into black pieces
+                blackPieces.insert(lastMove.pieceTaken);
+            }
+        }
+
+        moveHistory.pop();
+        updateObservers();
     }
 }
 
@@ -193,7 +226,7 @@ void GameManager::undoMove(){
  * @param color The color of the king that we wish to check
  * @return Whether the king is in check or not
  */
-bool GameManager::isKingInCheck(ChessColor color){
+bool GameManager::isKingInCheck(ChessColor color) const{
     if(color == White){
         for(auto it : blackPieces){
             if (it->isMoveValid(WhiteKing->getPosition(),boardState)){
@@ -221,7 +254,7 @@ bool GameManager::isKingInCheck(ChessColor color){
  * @param color The color of the king that we wish to check
  * @return Whether the king is in checkmate or not
  */
-bool GameManager::isKingInCheckmate(ChessColor color){
+bool GameManager::isKingInCheckmate(ChessColor color) const{
     //Temporary return value
     return false;
 }

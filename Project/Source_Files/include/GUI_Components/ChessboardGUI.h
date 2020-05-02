@@ -18,6 +18,7 @@ public:
 
 private:
     void OnInit();
+    wxStaticText* playerTurn;
 
     void ButtonClicked(wxCommandEvent& evt);
 

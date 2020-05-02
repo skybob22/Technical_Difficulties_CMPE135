@@ -110,6 +110,7 @@ void MainWindow::OnStartGame(wxCommandEvent& evt){
  * @param evt An event
  */
 void MainWindow::OnUndoMove(wxCommandEvent& evt){
+    gameManager->undoMove();
     evt.Skip();
 }
 

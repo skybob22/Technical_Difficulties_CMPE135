@@ -22,6 +22,7 @@ ChessboardGUI::~ChessboardGUI() = default;
  */
 void ChessboardGUI::OnInit(){
     //Create Grid
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     wxGridSizer* grid = new wxGridSizer(GameManager::getBoardHeight(),GameManager::getBoardWidth(),0,0);
 
     //Initialize boardSquares to be a WIDTH x HEIGHT grid of nullptr
@@ -41,7 +42,24 @@ void ChessboardGUI::OnInit(){
     }
 
     grid->Layout();
-    this->SetSizer(grid);
+    sizer->Add(grid,1,wxEXPAND | wxALL);
+    wxBoxSizer* gameInfoSizer = new wxBoxSizer(wxVERTICAL);
+
+    //Text to show which player's turn it is
+    wxBoxSizer* turnInfoSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText* turnLabel = new wxStaticText(this,wxID_ANY,"Player Turn:");
+    playerTurn = new wxStaticText(this,wxID_ANY,"");
+    turnInfoSizer->Add(turnLabel);
+    turnInfoSizer->Add(playerTurn);
+    turnInfoSizer->Layout();
+
+    gameInfoSizer->Add(turnInfoSizer);
+    gameInfoSizer->Layout();
+
+    sizer->Add(gameInfoSizer);
+    sizer->Layout();
+
+    this->SetSizer(sizer);
 
     //Register self as observer
     gameManager->registerObserver(this);
@@ -69,6 +87,18 @@ void ChessboardGUI::ButtonClicked(wxCommandEvent& evt){
     if(gameManager->movePiece(selectedSquare,BoardCoordinate(evt.GetId()/100,evt.GetId()%10))){
         selectedSquare.y = -1;
         selectedSquare.x = -1;
+    }
+    if(gameManager->isKingInCheck(Black)){
+        wxMessageBox(wxString::Format(
+                "Black king is in check"),"",
+                     wxOK | wxICON_INFORMATION,
+                     this);
+    }
+    if(gameManager->isKingInCheck(White)){
+        wxMessageBox(wxString::Format(
+                "White king is in check"),"",
+                     wxOK | wxICON_INFORMATION,
+                     this);
     }
     update();
 
@@ -122,4 +152,5 @@ void ChessboardGUI::update(){
     if(selectedSquare.y >=0 && selectedSquare.x >= 0){
         boardSquares[selectedSquare.y][selectedSquare.x]->SetBackgroundColour(wxColor(0x00FF00));
     }
+    playerTurn->SetLabelText(wxString(toString(gameManager->getPlayerTurn())));
 }

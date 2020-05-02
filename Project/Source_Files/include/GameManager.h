@@ -18,12 +18,13 @@ public:
     void newGame();
 
     //Game interaction
+    ChessColor getPlayerTurn() const;
     bool movePiece(BoardCoordinate start,BoardCoordinate dest);
     void undoMove();
     std::vector<std::vector<ChessPiece*>> getBoardState() const;
 
-    bool isKingInCheck(ChessColor color);
-    bool isKingInCheckmate(ChessColor color);
+    bool isKingInCheck(ChessColor color) const;
+    bool isKingInCheckmate(ChessColor color) const;
 
     //Subject Functionality
     void registerObserver(Observer* observer) override;
