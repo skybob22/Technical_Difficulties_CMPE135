@@ -68,6 +68,10 @@ void ChessboardGUI::OnInit(){
     Redraw();
 }
 
+/**
+ * @brief Called when a square on the chess board is clicked
+ * @param evt The WX even generated
+ */
 void ChessboardGUI::ButtonClicked(wxCommandEvent& evt){
     if(selectedSquare.x < 0){
         selectedSquare.y = evt.GetId()/100;
@@ -110,7 +114,7 @@ void ChessboardGUI::setColor(ChessColor type, const wxColour& newColor){
 }
 
 /**
- * @brief Redraws the board based on updated conditions
+ * @brief Updates the board based on updated conditions
  */
 void ChessboardGUI::update(){
     //Redraw the board state
@@ -120,21 +124,16 @@ void ChessboardGUI::update(){
     //Update player's turn
     playerTurn->SetLabelText(wxString(toString(gameManager->getPlayerTurn())));
 
-    //Notify player if king is in check or checkmate
-    if(gameManager->isKingInCheck(White)){
-        if(gameManager->isKingInCheckmate(White)){
-            wxMessageBox(wxString::Format("White king is in checkmate\nGame Over"), "", wxOK, this);
-        }
-        else {
-            wxMessageBox(wxString::Format("White king is in check"), "", wxOK, this);
-        }
-    }
-    if(gameManager->isKingInCheck(Black)){
-        if(gameManager->isKingInCheckmate(Black)){
-            wxMessageBox(wxString::Format("Black king is in checkmate\nGame Over"), "", wxOK, this);
-        }
-        else {
-            wxMessageBox(wxString::Format("Black king is in check"), "", wxOK, this);
+    //If the king is in check/checkmate, display a pop-up window
+    std::set<ChessColor> colors = {White,Black};
+    for(auto color : colors){
+        if(gameManager->isKingInCheck(color)){
+            if(gameManager->isKingInCheckmate(color)){
+                wxMessageBox(wxString::Format("%s king is in checkmate\nGame Over",toString(color)), "", wxOK, this);
+            }
+            else{
+                wxMessageBox(wxString::Format("%s king is in check",toString(color)), "", wxOK, this);
+            }
         }
     }
 }
