@@ -80,7 +80,6 @@ ChessPiece::~ChessPiece(){
     sprite.Destroy();
     delete moveChecker;
     moveChecker = nullptr;
-
 }
 
 /**
@@ -117,6 +116,11 @@ bool ChessPiece::isMoveValid(BoardCoordinate pos,const std::vector<std::vector<C
     return moveChecker->isMoveValid(position,pos,boardState);
 }
 
+/**
+ * @brief Gets all the valid spaces that the piece can move to (Ignores check/checkmate restriction)
+ * @param boardState The current state of the board/locations of pieces
+ * @return A set of all the positions that the piece can move to
+ */
 std::set<BoardCoordinate> ChessPiece::getValidMoves(const std::vector<std::vector<ChessPiece *> > &boardState) const{
     return moveChecker->getValidMoves(position,boardState);
 }

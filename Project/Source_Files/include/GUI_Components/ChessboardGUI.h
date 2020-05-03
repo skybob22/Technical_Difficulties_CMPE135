@@ -5,6 +5,7 @@
 #include "ChessPiece.h"
 #include "ChessTypes.h"
 #include "wx/wx.h"
+#include <string>
 
 class GameManager; //Forward Declaration
 
@@ -19,15 +20,18 @@ public:
 
 private:
     void OnInit();
-    wxStaticText* playerTurn;
-
     void ButtonClicked(wxCommandEvent& evt);
 
     GameManager* gameManager;
+    wxStaticText* playerTurn;
+
     wxColor whiteColor,blackColor;
+    wxImage transparentSqaure;
+    std::vector<std::vector<wxBitmapButton*>> boardSquares;
     BoardCoordinate selectedSquare;
 
-    std::vector<std::vector<wxBitmapButton*>> boardSquares;
+
+    const static std::string SPRITE_DIRECTORY;
 };
 
 #endif

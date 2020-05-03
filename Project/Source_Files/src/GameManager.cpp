@@ -121,6 +121,25 @@ void GameManager::newGame(){
     }
 }
 
+/**
+ * @brief Ends a game
+ */
+void GameManager::endGame(){
+    gameStarted = false;
+}
+
+/**
+ * @brief Gets whether a game is in progress or not
+ * @return If a game has been started
+ */
+bool GameManager::isGameInProgress() const{
+    return gameStarted;
+}
+
+/**
+ * @brief Gets which player's turn it is
+ * @return Which player's turn it is (White or Black)
+ */
 ChessColor GameManager::getPlayerTurn() const{
     return playerTurn;
 }

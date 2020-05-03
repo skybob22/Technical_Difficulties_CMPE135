@@ -73,6 +73,12 @@ bool RookChecker::isMoveValid(BoardCoordinate current,BoardCoordinate dest,const
     return boardState[dest.y][dest.x] == nullptr || (boardState[dest.y][dest.x]->getColor() != myColor);
 }
 
+/**
+ * @brief Gets a list of all the places the piece can move
+ * @param current The current position of the piece
+ * @param boardState The board state showing where all the pieces are
+ * @return A set containing all the valid positions
+ */
 std::set<BoardCoordinate> RookChecker::getValidMoves(BoardCoordinate current,const std::vector<std::vector<ChessPiece*>>& boardState) const{
     const std::vector<std::pair<int,int>> possibleDirections = {{1,0},{-1,0},{0,1},{0,-1}};
     std::set<BoardCoordinate> retVal;

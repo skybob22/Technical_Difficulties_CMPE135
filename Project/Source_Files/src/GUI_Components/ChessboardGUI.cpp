@@ -2,13 +2,14 @@
 #include "ChessTypes.h"
 #include "ChessPiece.h"
 #include "GameManager.h"
-#include <iostream>
+
+const std::string ChessboardGUI::SPRITE_DIRECTORY = "./Sprites/PNG/";
 
 /**
  * @brief Creates a chessboard gui
  * @param parent The window frame that the chessboard is inside
  */
-ChessboardGUI::ChessboardGUI(wxFrame* parent,GameManager* gameManager):wxPanel(parent,wxID_ANY),gameManager(gameManager),whiteColor(wxColour(0xFFFFFF)),blackColor(wxColour(0x606060)),selectedSquare(-1,-1){
+ChessboardGUI::ChessboardGUI(wxFrame* parent,GameManager* gameManager):wxPanel(parent,wxID_ANY),gameManager(gameManager),whiteColor(wxColour(0xFFFFFF)),blackColor(wxColour(0x606060)),transparentSqaure(SPRITE_DIRECTORY + "Transparent.png"),selectedSquare(-1,-1){
     OnInit();
 }
 
@@ -153,20 +154,24 @@ void ChessboardGUI::Redraw(){
             wxColor squareColor = ((row+col)%2==0)?whiteColor:blackColor;
             currentSquare->SetBackgroundColour(squareColor);
 
-            //Add sprites to board where pieces exist
+
+            int new_width = (currentSquare->m_width > 0)?currentSquare->m_width:1;
+            int new_height = (currentSquare->m_height > 0)?currentSquare->m_height:1;
+
             if(boardState[row][col] != nullptr){
-                int new_width = (currentSquare->m_width > 0)?currentSquare->m_width:1;
-                int new_height = (currentSquare->m_height > 0)?currentSquare->m_height:1;
+                //Add sprites to board where pieces exist
                 currentSquare->SetBitmap(wxBitmap(boardState[row][col]->getSprite().Scale(new_width,new_height)));
+                currentSquare->Refresh();
             }
             else{
-                currentSquare->SetBitmap(wxBitmap());//Attempt to replace with empty bitmap
-                currentSquare->SetBackgroundColour(wxColor(0xFF0000)); //Temporary color to indicate places with no pieces
+                //Clear the sprites for squares with no pieces
+                currentSquare->SetBitmap(wxBitmap(transparentSqaure.Scale(new_width,new_height)));//Attempt to replace with transparent bitmap
+                currentSquare->Refresh();
             }
         }
     }
 
-    //Highlight selected square
+    //Highlight currently selected square (if square is selected)
     if(selectedSquare.y >=0 && selectedSquare.y < static_cast<int>(GameManager::getBoardHeight()) && selectedSquare.x >= 0 && selectedSquare.x < static_cast<int>(GameManager::getBoardWidth())){
         boardSquares[selectedSquare.y][selectedSquare.x]->SetBackgroundColour(wxColor(0x00FF00));
     }

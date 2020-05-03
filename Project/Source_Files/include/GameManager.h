@@ -16,6 +16,8 @@ public:
     GameManager(const GameManager& other) = delete;
 
     void newGame();
+    void endGame();
+    bool isGameInProgress() const;
 
     //Game interaction
     ChessColor getPlayerTurn() const;
