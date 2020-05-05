@@ -11,6 +11,7 @@ const std::string ChessboardGUI::SPRITE_DIRECTORY = "./Sprites/PNG/";
  */
 ChessboardGUI::ChessboardGUI(wxFrame* parent,GameManager* gameManager):wxPanel(parent,wxID_ANY),gameManager(gameManager),whiteColor(wxColour(0xFFFFFF)),blackColor(wxColour(0x606060)),transparentSquare(SPRITE_DIRECTORY + "Transparent.png"),selectedSquare(-1,-1){
     this->parent = parent;
+    flip = false;
     OnInit();
 }
 
@@ -105,8 +106,13 @@ void ChessboardGUI::ButtonClicked(wxCommandEvent& evt){
         return;
     }
 
+    //Calculate adjusted position, taking board flip into account
+    int startY = static_cast<int>((flip&&gameManager->getPlayerTurn()==Black)?(GameManager::getBoardHeight()-1-selectedSquare.y):selectedSquare.y);
+    int startX = static_cast<int>((flip&&gameManager->getPlayerTurn()==Black)?(GameManager::getBoardHeight()-1-selectedSquare.x):selectedSquare.x);
+    int destY = static_cast<int>((flip&& gameManager->getPlayerTurn()==Black)?(GameManager::getBoardWidth()+-1-evt.GetId()/100):evt.GetId()/100);
+    int destX = static_cast<int>((flip&& gameManager->getPlayerTurn()==Black)?(GameManager::getBoardWidth()-1-evt.GetId()%10):evt.GetId()%10);
     //Attempt to move the piece
-    if(gameManager->movePiece(selectedSquare,BoardCoordinate(evt.GetId()/100,evt.GetId()%10))){
+    if(gameManager->movePiece(BoardCoordinate(startY,startX),BoardCoordinate(destY,destX))){
         selectedSquare.y = -1;
         selectedSquare.x = -1;
     }
@@ -140,7 +146,10 @@ void ChessboardGUI::update(){
     std::vector<std::vector<ChessPiece*>> boardState = gameManager->getBoardState();
     for(int row : {0,static_cast<int>(gameManager->getBoardHeight()-1)}) {
         for (int col = 0; col < static_cast<int>(gameManager->getBoardWidth()); col++) {
-            if(boardState[row][col] != nullptr && boardState[row][col]->getPieceType() == Pawn) {
+            //Calculate adjusted position, taking board flip into account
+            int coordY = static_cast<int>((flip&& gameManager->getPlayerTurn()==Black)?(GameManager::getBoardWidth()+-1-row):row);
+            int coordX = static_cast<int>((flip&& gameManager->getPlayerTurn()==Black)?(GameManager::getBoardWidth()-1-col):col);
+            if(boardState[coordY][coordX] != nullptr && boardState[coordY][coordX]->getPieceType() == Pawn) {
                 //Temporarily promote all pieces to queen for testing
                 int promotionType = static_cast<PieceType>(GetPopupMenuSelectionFromUser(*promotionMenu));
                 if(promotionType == wxID_NONE){
@@ -148,8 +157,9 @@ void ChessboardGUI::update(){
                     gameManager->undoMove();
                     break;
                 }
+
                 //Promote the pawn to the given type
-                gameManager->promotePawn(BoardCoordinate(row,col),static_cast<PieceType>(promotionType));
+                gameManager->promotePawn(BoardCoordinate(coordY,coordX),static_cast<PieceType>(promotionType));
             }
         }
     }
@@ -196,9 +206,11 @@ void ChessboardGUI::Redraw(){
             int new_width = (currentSquare->m_width > 0)?currentSquare->m_width:1;
             int new_height = (currentSquare->m_height > 0)?currentSquare->m_height:1;
 
-            if(boardState[row][col] != nullptr){
+            int coordY = static_cast<int>((flip&& gameManager->getPlayerTurn()==Black)?(GameManager::getBoardHeight()-1-row):row);
+            int coordX = static_cast<int>((flip&& gameManager->getPlayerTurn()==Black)?(GameManager::getBoardWidth()-1-col):col);
+            if(boardState[coordY][coordX] != nullptr){
                 //Add sprites to board where pieces exist
-                currentSquare->SetBitmap(wxBitmap(boardState[row][col]->getSprite().Scale(new_width,new_height)));
+                currentSquare->SetBitmap(wxBitmap(boardState[coordY][coordX]->getSprite().Scale(new_width,new_height)));
                 currentSquare->Refresh();
             }
             else{
@@ -213,4 +225,13 @@ void ChessboardGUI::Redraw(){
     if(selectedSquare.y >=0 && selectedSquare.y < static_cast<int>(GameManager::getBoardHeight()) && selectedSquare.x >= 0 && selectedSquare.x < static_cast<int>(GameManager::getBoardWidth())){
         boardSquares[selectedSquare.y][selectedSquare.x]->SetBackgroundColour(wxColor(0x00FF00));
     }
+}
+
+/**
+ * @brief Sets whether or not the board rotates on Black's turn
+ * @param val Whether to rotate the board or not
+ */
+void ChessboardGUI::setFlip(bool val){
+    flip = val;
+    Redraw();
 }

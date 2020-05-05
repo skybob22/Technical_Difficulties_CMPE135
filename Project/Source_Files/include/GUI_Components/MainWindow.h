@@ -27,6 +27,7 @@ private:
     void OnStartGame(wxCommandEvent& evt);
     void OnUndoMove(wxCommandEvent& evt);
     void OnSetColor(wxCommandEvent& evt);
+    void OnFlipSelect(wxCommandEvent& evt);
 
     wxMenuBar* menuBar;
     GameManager* gameManager;
@@ -39,7 +40,9 @@ private:
         CHESS_START,
         CHESS_UNDO,
         CHESS_BOARD_WHITE,
-        CHESS_BOARD_RED
+        CHESS_BOARD_RED,
+        CHESS_BOARD_FLIP_ON,
+        CHESS_BOARD_FLIP_OFF
     };
 };
 

@@ -25,6 +25,8 @@ wxBEGIN_EVENT_TABLE(MainWindow,wxFrame)
     //Setting board color
     EVT_MENU(CHESS_BOARD_WHITE,MainWindow::OnSetColor)
     EVT_MENU(CHESS_BOARD_RED,MainWindow::OnSetColor)
+    EVT_MENU(CHESS_BOARD_FLIP_ON,MainWindow::OnFlipSelect)
+    EVT_MENU(CHESS_BOARD_FLIP_OFF,MainWindow::OnFlipSelect)
     EVT_SIZE(MainWindow::OnResize)
 wxEND_EVENT_TABLE()
 
@@ -60,13 +62,19 @@ void MainWindow::InitMenu(){
     fileMenu->Append(CHESS_EXIT,"Exit");
 
     wxMenu* gameMenu = new wxMenu;
-    wxMenu* boardMenu = new wxMenu();
-    boardMenu->AppendRadioItem(CHESS_BOARD_WHITE,"White");
-    boardMenu->AppendRadioItem(CHESS_BOARD_RED,"Red");
+    wxMenu* boardColorMenu = new wxMenu();
+    boardColorMenu->AppendRadioItem(CHESS_BOARD_WHITE,"White");
+    boardColorMenu->AppendRadioItem(CHESS_BOARD_RED,"Red");
+
+    wxMenu* boardViewMenu = new wxMenu();
+    boardViewMenu->AppendRadioItem(CHESS_BOARD_FLIP_OFF,"Off");
+    boardViewMenu->AppendRadioItem(CHESS_BOARD_FLIP_ON,"On");
 
     gameMenu->Append(CHESS_START,"Start/Restart Game");
     gameMenu->Append(CHESS_UNDO,"Undo");
-    gameMenu->AppendSubMenu(boardMenu,"Board Color");
+    gameMenu->AppendSeparator();
+    gameMenu->AppendSubMenu(boardColorMenu,"Board Color");
+    gameMenu->AppendSubMenu(boardViewMenu,"Board Flip");
 
     menuBar->Append(fileMenu,"File");
     menuBar->Append(gameMenu,"Game");
@@ -129,4 +137,12 @@ void MainWindow::OnSetColor(wxCommandEvent& evt){
     }
     chessboardGUI->setColor(ChessColor::White,newWhiteColor);
     evt.Skip();
+}
+
+/**
+ * @brief Called when the user selects whether they want the board to flip (rotate) or not
+ * @param evt An event
+ */
+void MainWindow::OnFlipSelect(wxCommandEvent &evt){
+        chessboardGUI->setFlip(menuBar->FindItem(CHESS_BOARD_FLIP_ON)->IsChecked());
 }

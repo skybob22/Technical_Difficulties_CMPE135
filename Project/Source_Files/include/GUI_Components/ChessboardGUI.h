@@ -17,6 +17,7 @@ public:
 
     void setColor(ChessColor type,const wxColor& newColor);
     void Redraw();
+    void setFlip(bool val);
     void update() override;
 
 private:
@@ -26,6 +27,7 @@ private:
 
     GameManager* gameManager;
     wxStaticText* playerTurn;
+    bool flip;
 
     wxColor whiteColor,blackColor;
     wxImage transparentSquare;
