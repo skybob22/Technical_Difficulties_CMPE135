@@ -8,6 +8,7 @@
 #include <string>
 
 class GameManager; //Forward Declaration
+class PromotionWindow; //Forward Declaration
 
 class ChessboardGUI : public wxPanel, public Observer{
 public:
@@ -21,14 +22,16 @@ public:
 private:
     void OnInit();
     void ButtonClicked(wxCommandEvent& evt);
+    wxWindow* parent; //TODO: Maybe temporary, remove if not needed
 
     GameManager* gameManager;
     wxStaticText* playerTurn;
 
     wxColor whiteColor,blackColor;
-    wxImage transparentSqaure;
+    wxImage transparentSquare;
     std::vector<std::vector<wxBitmapButton*>> boardSquares;
     BoardCoordinate selectedSquare;
+    PromotionWindow* promotionWindow;
 
 
     const static std::string SPRITE_DIRECTORY;

@@ -2,6 +2,8 @@
 #include "ChessTypes.h"
 #include "ChessPiece.h"
 #include "GameManager.h"
+#include "PromotionWindow.h"
+#include <iostream>
 
 const std::string ChessboardGUI::SPRITE_DIRECTORY = "./Sprites/PNG/";
 
@@ -9,7 +11,8 @@ const std::string ChessboardGUI::SPRITE_DIRECTORY = "./Sprites/PNG/";
  * @brief Creates a chessboard gui
  * @param parent The window frame that the chessboard is inside
  */
-ChessboardGUI::ChessboardGUI(wxFrame* parent,GameManager* gameManager):wxPanel(parent,wxID_ANY),gameManager(gameManager),whiteColor(wxColour(0xFFFFFF)),blackColor(wxColour(0x606060)),transparentSqaure(SPRITE_DIRECTORY + "Transparent.png"),selectedSquare(-1,-1){
+ChessboardGUI::ChessboardGUI(wxFrame* parent,GameManager* gameManager):wxPanel(parent,wxID_ANY),gameManager(gameManager),whiteColor(wxColour(0xFFFFFF)),blackColor(wxColour(0x606060)),transparentSquare(SPRITE_DIRECTORY + "Transparent.png"),selectedSquare(-1,-1){
+    this->parent = parent;
     OnInit();
 }
 
@@ -74,6 +77,10 @@ void ChessboardGUI::OnInit(){
  * @param evt The WX even generated
  */
 void ChessboardGUI::ButtonClicked(wxCommandEvent& evt){
+    if(!gameManager->isGameInProgress()){
+        return;
+    }
+
     if(selectedSquare.x < 0){
         selectedSquare.y = evt.GetId()/100;
         selectedSquare.x = evt.GetId()%10;
@@ -118,24 +125,48 @@ void ChessboardGUI::setColor(ChessColor type, const wxColour& newColor){
  * @brief Updates the board based on updated conditions
  */
 void ChessboardGUI::update(){
+    //Update information/create windows based on updated information
+    std::vector<std::vector<ChessPiece*>> boardState = gameManager->getBoardState();
+    for(int row : {0,static_cast<int>(gameManager->getBoardHeight()-1)}) {
+        for (int col = 0; col < static_cast<int>(gameManager->getBoardWidth()); col++) {
+            if(boardState[row][col] != nullptr && boardState[row][col]->getPieceType() == Pawn){
+                //Temporarily promote all pieces to queen for testing
+                gameManager->promotePawn(BoardCoordinate(row,col),Queen);
+
+
+            }
+        }
+    }
+
+    //TODO: Temporary code to try and create popup window, it doesn't seem to work
+    static bool temp = true;
+    if(temp){
+        printf("Attempting to create popup window\n");
+        promotionWindow = new PromotionWindow(this,this);
+        promotionWindow->Raise();
+        temp = false;
+    }
+
     //Redraw the board state
     Redraw();
 
-    //Update information/create windows based on updated information
     //Update player's turn
     playerTurn->SetLabelText(wxString(toString(gameManager->getPlayerTurn())));
 
     //If the king is in check/checkmate, display a pop-up window
     std::set<ChessColor> colors = {White,Black};
-    for(auto color : colors){
-        if(gameManager->isKingInCheck(color)){
-            if(gameManager->isKingInCheckmate(color)){
-                wxMessageBox(wxString::Format("%s king is in checkmate\nGame Over",toString(color)), "", wxOK, this);
-            }
-            else{
-                wxMessageBox(wxString::Format("%s king is in check",toString(color)), "", wxOK, this);
-            }
+    if(gameManager->isKingInCheck()){
+        if(gameManager->isKingInCheckmate()){
+            wxMessageBox(wxString::Format("%s king is in checkmate\nGame Over",toString(gameManager->getPlayerTurn())), "", wxOK, this);
+            gameManager->endGame();
         }
+        else{
+            wxMessageBox(wxString::Format("%s king is in check",toString(gameManager->getPlayerTurn())), "", wxOK, this);
+        }
+    }
+    else if(gameManager->isStalemate()){
+        wxMessageBox(wxString::Format("Stalemate\nGame Over"), "", wxOK, this);
+        gameManager->endGame();
     }
 }
 
@@ -165,7 +196,7 @@ void ChessboardGUI::Redraw(){
             }
             else{
                 //Clear the sprites for squares with no pieces
-                currentSquare->SetBitmap(wxBitmap(transparentSqaure.Scale(new_width,new_height)));//Attempt to replace with transparent bitmap
+                currentSquare->SetBitmap(wxBitmap(transparentSquare.Scale(new_width,new_height)));//Attempt to replace with transparent bitmap
                 currentSquare->Refresh();
             }
         }

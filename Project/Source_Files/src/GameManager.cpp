@@ -18,8 +18,8 @@ const std::vector<GameManager::PieceInfo> GameManager::DEFAULT_WHITE_PIECES = {
         PieceInfo(White,Rook,BoardCoordinate(7,0)),
         PieceInfo(White,Knight,BoardCoordinate(7,1)),
         PieceInfo(White,Bishop,BoardCoordinate(7,2)),
-        PieceInfo(White,King,BoardCoordinate(7,3)),
-        PieceInfo(White,Queen,BoardCoordinate(7,4)),
+        PieceInfo(White,Queen,BoardCoordinate(7,3)),
+        PieceInfo(White,King,BoardCoordinate(7,4)),
         PieceInfo(White,Bishop,BoardCoordinate(7,5)),
         PieceInfo(White,Knight,BoardCoordinate(7,6)),
         PieceInfo(White,Rook,BoardCoordinate(7,7))
@@ -30,8 +30,8 @@ const std::vector<GameManager::PieceInfo> GameManager::DEFAULT_BLACK_PIECES = {
         PieceInfo(Black,Rook,BoardCoordinate(0,0)),
         PieceInfo(Black,Knight,BoardCoordinate(0,1)),
         PieceInfo(Black,Bishop,BoardCoordinate(0,2)),
-        PieceInfo(Black,King,BoardCoordinate(0,3)),
-        PieceInfo(Black,Queen,BoardCoordinate(0,4)),
+        PieceInfo(Black,Queen,BoardCoordinate(0,3)),
+        PieceInfo(Black,King,BoardCoordinate(0,4)),
         PieceInfo(Black,Bishop,BoardCoordinate(0,5)),
         PieceInfo(Black,Knight,BoardCoordinate(0,6)),
         PieceInfo(Black,Rook,BoardCoordinate(0,7)),
@@ -175,7 +175,7 @@ bool GameManager::movePiece(BoardCoordinate start, BoardCoordinate dest){
     forceMove(start,dest);
 
     //Check if player's king is in check, if so undo move and return false
-    if(isKingInCheck(playerTurn)){
+    if(isKingInCheck()){
         undoMove();
         return false;
     }
@@ -200,11 +200,11 @@ void GameManager::forceMove(BoardCoordinate start,BoardCoordinate dest){
         //Only validity check in function. If piece is nullptr, nothing to move
         return;
     }
-    moveHistory.push(ChessMove(start,dest,boardState[dest.y][dest.x]));
+    moveHistory.emplace(start,dest,boardState[dest.y][dest.x]);
     if(boardState[dest.y][dest.x] != nullptr){
-        //Try and remove from both, and if it's not present then nothing will happen
-        whitePieces.erase(boardState[dest.y][dest.x]);
-        blackPieces.erase(boardState[dest.y][dest.x]);
+        //Remove the piece from the appropriate set
+        std::unordered_set<ChessPiece*>& pieceSet = (boardState[dest.y][dest.x]->getColor()==White?whitePieces:blackPieces);
+        pieceSet.erase(boardState[dest.y][dest.x]);
     }
     pieceToMove->move(dest);
     boardState[dest.y][dest.x] = pieceToMove;
@@ -214,35 +214,80 @@ void GameManager::forceMove(BoardCoordinate start,BoardCoordinate dest){
 /**
  * @brief Undoes the last move
  */
-void GameManager::undoMove(){
-    if(!moveHistory.empty()) {
-        if(moveHistory.top().start == moveHistory.top().dest){
-            //Special case when pawn reaches end and is promoted, need to undo last 2 moves instead of last 1
-            //TODO: Implement undoing promotion
-
-        }
-
-        //Revert board state to previous state
-        ChessMove lastMove = moveHistory.top();
-        ChessPiece* movedPiece = boardState[lastMove.dest.y][lastMove.dest.x];
-
-        //Move piece back to where it was, and put the taken piece (can be nullptr) where the piece moved to
-        if(movedPiece != nullptr){
-            movedPiece->move(lastMove.start);
-            playerTurn = movedPiece->getColor();
-        }
-        boardState[lastMove.start.y][lastMove.start.x] = movedPiece; //Move the piece back to where it was before
-        boardState[lastMove.dest.y][lastMove.dest.x] = lastMove.pieceTaken;
-
-        if(lastMove.pieceTaken != nullptr){
-            (lastMove.pieceTaken->getColor() == White?whitePieces:blackPieces).insert(lastMove.pieceTaken);
-        }
-
-        moveHistory.pop();
-        if(!silentMode) {
-            updateObservers();
-        }
+bool GameManager::undoMove(){
+    if(moveHistory.empty()){
+        return false;
     }
+
+    if(moveHistory.top().start == moveHistory.top().dest){
+        //Special case when pawn reaches end and is promoted, need to undo last 2 moves instead of last 1
+        ChessMove promotion = moveHistory.top();
+        BoardCoordinate pos = promotion.start;
+        ChessPiece* pieceToRemove = boardState[pos.y][pos.x];
+        std::unordered_set<ChessPiece*>& pieceSet = (pieceToRemove->getColor()==White?whitePieces:blackPieces);
+
+        //Remove the old piece from the board
+        pieceSet.erase(pieceToRemove);
+
+        //Re-add the pawn to the board
+        boardState[pos.y][pos.x] = promotion.pieceTaken;
+        pieceSet.insert(promotion.pieceTaken);
+
+        delete pieceToRemove;
+        moveHistory.pop();
+    }
+
+    //Revert board state to previous state
+    ChessMove lastMove = moveHistory.top();
+    ChessPiece* movedPiece = boardState[lastMove.dest.y][lastMove.dest.x];
+
+    //Move piece back to where it was, and put the taken piece (can be nullptr) where the piece moved to
+    if(movedPiece != nullptr){
+        movedPiece->move(lastMove.start);
+        playerTurn = movedPiece->getColor();
+    }
+    boardState[lastMove.start.y][lastMove.start.x] = movedPiece; //Move the piece back to where it was before
+    boardState[lastMove.dest.y][lastMove.dest.x] = lastMove.pieceTaken;
+
+    if(lastMove.pieceTaken != nullptr){
+        std::unordered_set<ChessPiece*>& pieceSet = (lastMove.pieceTaken->getColor() == White?whitePieces:blackPieces);
+        pieceSet.insert(lastMove.pieceTaken);
+    }
+
+    moveHistory.pop();
+    gameStarted = true;
+    if(!silentMode) {
+        updateObservers();
+    }
+    return true;
+}
+
+/**
+ * @brief Promotes a pawn to a different type of piece
+ * @param pos The position of the pawn to promote
+ * @param type The type of piece to turn the pawn into
+ */
+bool GameManager::promotePawn(BoardCoordinate pos, PieceType type){
+    if(!MovementChecker::isPositionOnBoard(pos) || (pos.y != 0 && pos.y != BOARD_HEIGHT-1)){
+        //Piece must be in top or bottom row
+        return false;
+    }
+
+    ChessPiece* pieceToReplace = boardState[pos.y][pos.x];
+    if(pieceToReplace == nullptr || pieceToReplace->getPieceType() != Pawn){
+        //Piece must be a pawn
+        return false;
+    }
+
+    ChessColor pieceColor = pieceToReplace->getColor();
+    std::unordered_set<ChessPiece*>& pieceSet = (pieceColor==White?whitePieces:blackPieces);
+
+    pieceSet.erase(pieceToReplace);
+    moveHistory.emplace(pos,pos,pieceToReplace);
+    ChessPiece* newPiece = new ChessPiece(pieceColor,type,pos);
+    boardState[pos.y][pos.x] = newPiece;
+    pieceSet.insert(newPiece);
+    return true;
 }
 
 /**
@@ -250,14 +295,14 @@ void GameManager::undoMove(){
  * @param color The color of the king that we wish to check
  * @return Whether the king is in check or not
  */
-bool GameManager::isKingInCheck(ChessColor color) const{
+bool GameManager::isKingInCheck() const{
     if(!gameStarted){
         //Cannot have check/checkmate if no game running
         return false;
     }
 
-    for(auto piece : (color == White?blackPieces:whitePieces)){
-        if(piece->isMoveValid((color == White?WhiteKing:BlackKing)->getPosition(),boardState)){
+    for(auto piece : (playerTurn == White?blackPieces:whitePieces)){
+        if(piece->isMoveValid((playerTurn == White?WhiteKing:BlackKing)->getPosition(),boardState)){
             //If any piece puts the king in check, we don't need to continue checking
             return true;
         }
@@ -271,24 +316,33 @@ bool GameManager::isKingInCheck(ChessColor color) const{
  * @param color The color of the king that we wish to check
  * @return Whether the king is in checkmate or not
  */
-bool GameManager::isKingInCheckmate(ChessColor color) const{
+bool GameManager::isKingInCheckmate() const{
     /*
      * Technically speaking, this function is not const as it modifies the internal state,
      * However it guarantees that it will return the state to the original state before returning, so it is still declared const
      */
 
-    if(!isKingInCheck(color)){
+    if(!isKingInCheck()){
         //Checking for checkmate is expensive, don't do it if the king isn't in check
         return false;
     }
 
+    //Stalemate means player cannot move any pieces. Checkmate is basically the same as stalemate + the king is in check
+    return isStalemate();
+}
+
+/**
+ * @brief Checks to see if the game is in stalemate
+ * @return Whether the game is in stalemate
+ */
+bool GameManager::isStalemate() const{
     const_cast<GameManager*>(this)->silentMode = true;
-    for(auto piece : (color == White?whitePieces:blackPieces)){
+    for(auto piece : (playerTurn == White?whitePieces:blackPieces)){
         for(auto spot : piece->getValidMoves(boardState)){
             //Try every possible valid move for pieces of that color
             const_cast<GameManager*>(this)->forceMove(piece->getPosition(),spot);
-            if(!isKingInCheck(color)){
-                //If any single move takes the king out of check, then the king is not in checkmate
+            if(!isKingInCheck()){
+                //If any single move takes the king out of check, then there is a valid move
                 const_cast<GameManager*>(this)->undoMove();
                 const_cast<GameManager*>(this)->silentMode = false;
                 return false;
@@ -298,7 +352,7 @@ bool GameManager::isKingInCheckmate(ChessColor color) const{
             }
         }
     }
-    //If no possible moves take the king out of check, then it is in fact checkmate
+    //If no possible moves take do not leave the king in check, then there is stalemate
     const_cast<GameManager*>(this)->silentMode = false;
     return true;
 }

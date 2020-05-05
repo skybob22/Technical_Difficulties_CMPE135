@@ -22,11 +22,13 @@ public:
     //Game interaction
     ChessColor getPlayerTurn() const;
     bool movePiece(BoardCoordinate start,BoardCoordinate dest);
-    void undoMove();
+    bool undoMove();
+    bool promotePawn(BoardCoordinate pos,PieceType type);
     std::vector<std::vector<ChessPiece*>> getBoardState() const;
 
-    bool isKingInCheck(ChessColor color) const;
-    bool isKingInCheckmate(ChessColor color) const;
+    bool isKingInCheck() const;
+    bool isKingInCheckmate() const;
+    bool isStalemate() const;
 
     //Subject Functionality
     void registerObserver(Observer* observer) override;
@@ -54,7 +56,6 @@ private:
     bool silentMode; //Used so functions can be internally called without updating observers
 
     //Keep track of pieces
-    //TODO: Try and figure out better data structure
     std::unordered_set<ChessPiece*> whitePieces,blackPieces;
     std::vector<std::vector<ChessPiece*>> boardState;
     ChessPiece* WhiteKing;
