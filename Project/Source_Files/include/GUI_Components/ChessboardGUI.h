@@ -31,7 +31,7 @@ private:
     wxImage transparentSquare;
     std::vector<std::vector<wxBitmapButton*>> boardSquares;
     BoardCoordinate selectedSquare;
-    PromotionWindow* promotionWindow;
+    wxMenu* promotionMenu;
 
 
     const static std::string SPRITE_DIRECTORY;

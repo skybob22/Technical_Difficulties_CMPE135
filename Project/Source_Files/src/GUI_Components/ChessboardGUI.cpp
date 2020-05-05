@@ -2,8 +2,6 @@
 #include "ChessTypes.h"
 #include "ChessPiece.h"
 #include "GameManager.h"
-#include "PromotionWindow.h"
-#include <iostream>
 
 const std::string ChessboardGUI::SPRITE_DIRECTORY = "./Sprites/PNG/";
 
@@ -70,6 +68,18 @@ void ChessboardGUI::OnInit(){
 
     //Render the board
     Redraw();
+
+    //Create the menu for promoting pawns
+    promotionMenu = new wxMenu;
+    std::vector<std::pair<PieceType,std::string>> menu_pairs = {
+            {Queen,"Queen"},
+            {Bishop,"Bishop"},
+            {Knight,"Knight"},
+            {Rook,"Rook"},
+    };
+    for(auto it : menu_pairs){
+        promotionMenu->Append(std::get<0>(it),std::get<1>(it));
+    }
 }
 
 /**
@@ -126,25 +136,22 @@ void ChessboardGUI::setColor(ChessColor type, const wxColour& newColor){
  */
 void ChessboardGUI::update(){
     //Update information/create windows based on updated information
+    //Check to see if there are any pawns that need to be promoted
     std::vector<std::vector<ChessPiece*>> boardState = gameManager->getBoardState();
     for(int row : {0,static_cast<int>(gameManager->getBoardHeight()-1)}) {
         for (int col = 0; col < static_cast<int>(gameManager->getBoardWidth()); col++) {
-            if(boardState[row][col] != nullptr && boardState[row][col]->getPieceType() == Pawn){
+            if(boardState[row][col] != nullptr && boardState[row][col]->getPieceType() == Pawn) {
                 //Temporarily promote all pieces to queen for testing
-                gameManager->promotePawn(BoardCoordinate(row,col),Queen);
-
-
+                int promotionType = static_cast<PieceType>(GetPopupMenuSelectionFromUser(*promotionMenu));
+                if(promotionType == wxID_NONE){
+                    //If user clicks away, abort the move
+                    gameManager->undoMove();
+                    break;
+                }
+                //Promote the pawn to the given type
+                gameManager->promotePawn(BoardCoordinate(row,col),static_cast<PieceType>(promotionType));
             }
         }
-    }
-
-    //TODO: Temporary code to try and create popup window, it doesn't seem to work
-    static bool temp = true;
-    if(temp){
-        printf("Attempting to create popup window\n");
-        promotionWindow = new PromotionWindow(this,this);
-        promotionWindow->Raise();
-        temp = false;
     }
 
     //Redraw the board state

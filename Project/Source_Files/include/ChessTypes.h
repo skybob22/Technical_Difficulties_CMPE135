@@ -8,11 +8,12 @@ enum ChessColor{
     Black
 };
 
-inline std::string toString(ChessColor c){
-    return (c == White)?"White":"Black";
+inline std::string toString(ChessColor c) {
+    return (c == White) ? "White" : "Black";
 }
-inline ChessColor operator !(ChessColor c){
-    return (c==White)?Black:White;
+
+inline ChessColor operator!(ChessColor c) {
+    return (c == White) ? Black : White;
 }
 
 
